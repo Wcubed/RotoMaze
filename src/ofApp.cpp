@@ -2,7 +2,12 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+    // Setup the window.
+    ofSetWindowShape(1000, 1000);
 
+    wireCube.setPos(0, 0, 100);
+    wireCube.setSize(ofGetHeight()/2);
+    wireCube.setXRot(100);
 }
 
 //--------------------------------------------------------------
@@ -12,7 +17,14 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
+    ofEnableSmoothing();
 
+    ofPushMatrix();
+    ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
+
+    wireCube.draw();
+
+    ofPopMatrix();
 }
 
 //--------------------------------------------------------------
@@ -57,7 +69,8 @@ void ofApp::mouseExited(int x, int y){
 
 //--------------------------------------------------------------
 void ofApp::windowResized(int w, int h){
-
+    wireCube.setSize(h/2);
+    wireCube.setPos(0, 0, h/10);
 }
 
 //--------------------------------------------------------------
