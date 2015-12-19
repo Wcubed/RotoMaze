@@ -5,9 +5,10 @@ void ofApp::setup(){
     // Setup the window.
     ofSetWindowShape(1000, 1000);
 
+    // Initialize the wireframe cube.
     wireCube.setPos(0, 0, 100);
     wireCube.setSize(ofGetHeight()/2);
-    wireCube.setXRot(100);
+    wireCube.setXRot(10);
 }
 
 //--------------------------------------------------------------
@@ -17,12 +18,30 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
+
+    // ---------- Draw on framebuffer ----------
+
+    wireCube.fboBegin();
+
+    ofBackground(0, 200, 0, 100);
+
+    ofSetColor(255, 0, 0);
+    ofDrawRectangle(0, 0, 10, 10);
+
+    wireCube.fboEnd();
+
+    // ---------- Draw on actual window ----------
+    ofBackground(0);
+
     ofEnableSmoothing();
 
     ofPushMatrix();
     ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
 
+    // The cube.
     wireCube.draw();
+
+
 
     ofPopMatrix();
 }
@@ -69,8 +88,10 @@ void ofApp::mouseExited(int x, int y){
 
 //--------------------------------------------------------------
 void ofApp::windowResized(int w, int h){
-    wireCube.setSize(h/2);
+
+    // Reposition and resize the wireframe cube.
     wireCube.setPos(0, 0, h/10);
+    wireCube.setSize(h/2);
 }
 
 //--------------------------------------------------------------

@@ -5,6 +5,7 @@
 
 /*
  * A cube consisting only of edges.
+ * It has a framebuffer which will be drawn inside the cube.
  */
 class WireframeCube
 {
@@ -13,6 +14,9 @@ public:
     WireframeCube(int _size);
 
     void draw();
+
+    void fboBegin();
+    void fboEnd();
 
     void setPos(float x, float y, float z);
     void setSize(float _size);
@@ -38,8 +42,13 @@ private:
     float size;
     float xRot;
 
-    // The actual mesh data.
-    ofMesh mesh;
+    // Mesh data for the cube.
+    ofMesh cube;
+    // Mesh data for the framebuffer plane.
+    ofMesh plane;
+
+    // Framebuffer which will be drawn on a plane inside the cube.
+    ofFbo gameScreen;
 };
 
 #endif // OFEDGEBOXPRIMITIVE_H
