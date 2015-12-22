@@ -42,18 +42,51 @@ WireframeCube::WireframeCube(int _size)
 }
 
 /*
+ * Updates the cube.
+ * It will slowly spin within 10 degrees along the X and Y axis.
+ */
+void WireframeCube::update(float dt) {
+
+    // We rotate between +2 and -2 degrees.
+    if (xRot > 3) {
+        xRotDir = false;
+    } else if (xRot < -3) {
+        xRotDir = true;
+    }
+
+    if (yRot > 3) {
+        yRotDir = false;
+    } else if (yRot < -3) {
+        yRotDir = true;
+    }
+
+    // Rotate along the X axis.
+    if (xRotDir) {
+        xRot += 0.7 * dt;
+    } else {
+        xRot -= 0.7 * dt;
+    }
+
+    // Rotate along the Y axis.
+    if (yRotDir) {
+        yRot += 0.4 * dt;
+    } else {
+        yRot -= 0.4 * dt;
+    }
+}
+
+/*
  * Draws the cube on the screen with the specified size.
  */
-
 void WireframeCube::draw() {
     ofPushMatrix();
 
     ofTranslate(pos);
-    ofRotateZ(xRot);
+    ofRotateZ(zRot);
 
     // DEBUG (paralax)
-    ofRotateX(ofGetMouseY()/100.0 - 5);
-    ofRotateY(-(ofGetMouseX()/100.0 - 5));
+    ofRotateX(xRot);
+    ofRotateY(yRot);
 
     ofPushMatrix();
     ofScale(size*0.5, size*0.5, size*0.5);
@@ -106,6 +139,6 @@ void WireframeCube::setSize(float _size) {
     size = _size;
 }
 
-void WireframeCube::setXRot(float angle) {
-    xRot = angle;
+void WireframeCube::setZRot(float angle) {
+    zRot = angle;
 }

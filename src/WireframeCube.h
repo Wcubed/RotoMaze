@@ -13,6 +13,7 @@ public:
     WireframeCube() : WireframeCube(100) {}
     WireframeCube(int _size);
 
+    void update(float dt);
     void draw();
 
     void fboBegin();
@@ -20,7 +21,7 @@ public:
 
     void setPos(float x, float y, float z);
     void setSize(float _size);
-    void setXRot(float angle);
+    void setZRot(float angle);
 
 private:
 
@@ -41,6 +42,12 @@ private:
     ofVec3f pos;
     float size;
     float xRot;
+    float yRot;
+    float zRot;
+
+    // Rotation directions (the cube 'floats' along the X and Y rotation axis).
+    bool xRotDir;
+    bool yRotDir;
 
     // Mesh data for the cube.
     ofMesh cube;

@@ -8,12 +8,17 @@ void ofApp::setup(){
     // Initialize the wireframe cube.
     wireCube.setPos(0, 0, 100);
     wireCube.setSize(ofGetHeight()/2);
-    wireCube.setXRot(10);
+    wireCube.setZRot(10);
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
 
+    // Get the deltatime.
+    float dt = ofGetLastFrameTime();
+
+    wireCube.setZRot((ofGetMouseX()/1000.0 * 360) - 180);
+    wireCube.update(dt);
 }
 
 //--------------------------------------------------------------
@@ -23,7 +28,7 @@ void ofApp::draw(){
 
     wireCube.fboBegin();
 
-    ofBackground(0, 200, 0, 100);
+    ofBackground(0, 0, 0, 0);
 
     ofSetColor(255, 0, 0);
     ofDrawRectangle(0, 0, 10, 10);
