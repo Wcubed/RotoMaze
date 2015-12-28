@@ -19,6 +19,9 @@ public:
     void fboBegin();
     void fboEnd();
 
+    int getFboWidth();
+    int getFboHeight();
+
     void setPos(float x, float y, float z);
     void setSize(float _size);
     void setZRot(float angle);

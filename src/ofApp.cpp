@@ -30,8 +30,7 @@ void ofApp::draw(){
 
     ofBackground(0, 0, 0, 0);
 
-    ofSetColor(255, 0, 0);
-    ofDrawRectangle(0, 0, 10, 10);
+    maze.draw(wireCube.getFboWidth());
 
     wireCube.fboEnd();
 

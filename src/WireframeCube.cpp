@@ -23,7 +23,7 @@ WireframeCube::WireframeCube(int _size)
     }
 
     // Allocate the framebuffer.
-    gameScreen.allocate(1000, 1000, GL_RGBA);
+    gameScreen.allocate(500, 500, GL_RGBA);
 
     // ---- Create the plane. ----
     plane.setMode(OF_PRIMITIVE_TRIANGLE_FAN);
@@ -80,6 +80,7 @@ void WireframeCube::update(float dt) {
  */
 void WireframeCube::draw() {
     ofPushMatrix();
+    ofPushStyle();
 
     ofTranslate(pos);
     ofRotateZ(zRot);
@@ -92,11 +93,13 @@ void WireframeCube::draw() {
     ofScale(size*0.5, size*0.5, size*0.5);
 
     // Draw the wireframe.
+    ofSetColor(0, 150, 0);
     cube.draw();
 
     ofPopMatrix();
 
     // Draw the plane in the front part of the cube and slightly smaller.
+    ofSetColor(255);
     ofTranslate(0, 0, size*0.3);
     ofScale(size*0.5 - size*0.1, size*0.5 - size*0.1, size*0.5 - size*0.1);
 
@@ -109,8 +112,8 @@ void WireframeCube::draw() {
     // Unbind the framebuffer.
     gameScreen.getTexture().unbind();
 
+    ofPopStyle();
     ofPopMatrix();
-
 }
 
 // ---------- FRAMEBUFFER ----------
@@ -127,6 +130,20 @@ void WireframeCube::fboBegin() {
  */
 void WireframeCube::fboEnd() {
     gameScreen.end();
+}
+
+/*
+ * Returns the height of the framebuffer.
+ */
+int WireframeCube::getFboHeight() {
+    return gameScreen.getHeight();
+}
+
+/*
+ * Returns the width of the framebuffer.
+ */
+int WireframeCube::getFboWidth() {
+    return gameScreen.getWidth();
 }
 
 // ---------- SETTERS ---------

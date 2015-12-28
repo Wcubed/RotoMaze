@@ -3,6 +3,7 @@
 #include "ofMain.h"
 
 #include "WireframeCube.h"
+#include "Maze.h"
 
 class ofApp : public ofBaseApp{
 
@@ -25,6 +26,7 @@ public:
 
 private:
     WireframeCube wireCube;
+    Maze maze;
 
 };
 
