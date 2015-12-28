@@ -17,7 +17,15 @@ void ofApp::update(){
     // Get the deltatime.
     float dt = ofGetLastFrameTime();
 
-    wireCube.setZRot((ofGetMouseX()/1000.0 * 360) - 180);
+    // Set the angle from the mouse position.
+    angle = (ofGetMouseX()/1000.0 * 360) - 180;
+
+    // Update the cube and the maze with the angle.
+    maze.setAngle(angle);
+    wireCube.setZRot(angle);
+
+    // Update the cube and the maze.
+    maze.update();
     wireCube.update(dt);
 }
 

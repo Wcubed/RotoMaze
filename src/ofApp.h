@@ -28,5 +28,7 @@ private:
     WireframeCube wireCube;
     Maze maze;
 
+    float angle; // Current angle of the input cube.
+
 };
 
