@@ -21,6 +21,8 @@ Project{
             "src/main.cpp",
             "src/ofApp.cpp",
             "src/ofApp.h",
+            "src/Serial.cpp",
+            "src/Serial.h"
         ]
 
         of.addons: [

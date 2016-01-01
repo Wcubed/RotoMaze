@@ -9,16 +9,22 @@ void ofApp::setup(){
     wireCube.setPos(0, 0, 100);
     wireCube.setSize(ofGetHeight()/2);
     wireCube.setZRot(10);
+
+    serial.setup();
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
 
+    //Get Accelerometer Values
+    int angle = serial.getAccelerometerValues();
+    //printf("Accelerometer Angle %i", angle);
+
     // Get the deltatime.
     float dt = ofGetLastFrameTime();
 
     // Set the angle from the mouse position.
-    angle = (ofGetMouseX()/1000.0 * 360) - 180;
+    //angle = (ofGetMouseX()/1000.0 * 360) - 180;
 
     // Update the cube and the maze with the angle.
     maze.setAngle(angle);

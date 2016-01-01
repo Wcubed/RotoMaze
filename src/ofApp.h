@@ -4,6 +4,7 @@
 
 #include "WireframeCube.h"
 #include "Maze.h"
+#include "Serial.h"
 
 class ofApp : public ofBaseApp{
 
@@ -27,6 +28,7 @@ public:
 private:
     WireframeCube wireCube;
     Maze maze;
+    Serial serial;
 
     float angle; // Current angle of the input cube.
 

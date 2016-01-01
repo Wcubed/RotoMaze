@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 3.5.1, 2015-12-22T14:16:54. -->
+<!-- Written by QtCreator 3.5.1, 2016-01-01T15:25:01. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
-  <value type="QByteArray">{39fbd51b-45d7-4b79-9004-30a8d10ab3bb}</value>
+  <value type="QByteArray">{25f447eb-2a48-47c9-903a-6e1f04732903}</value>
  </data>
  <data>
   <variable>ProjectExplorer.Project.ActiveTarget</variable>
@@ -60,12 +60,12 @@
   <valuemap type="QVariantMap">
    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">Desktop</value>
    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">Desktop</value>
-   <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">{b4a4770c-6ac8-4bbf-ad48-bbf2eda7a6aa}</value>
+   <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">{6a8481e7-10b7-4bf5-8303-a446cab4ed43}</value>
    <value type="int" key="ProjectExplorer.Target.ActiveBuildConfiguration">0</value>
    <value type="int" key="ProjectExplorer.Target.ActiveDeployConfiguration">0</value>
    <value type="int" key="ProjectExplorer.Target.ActiveRunConfiguration">0</value>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.BuildConfiguration.0">
-    <value type="QString" key="ProjectExplorer.BuildConfiguration.BuildDirectory">/media/Data/WybeData/Projects/C++/OpenFrameWorks/of_v0.9.0_linux64_release/apps/myApps/build-RotoMaze-Desktop-Debug</value>
+    <value type="QString" key="ProjectExplorer.BuildConfiguration.BuildDirectory">/home/freek/Downloads/of_v0.9.0_linux64_release/apps/programming/build-RotoMaze-Desktop-Debug</value>
     <valuemap type="QVariantMap" key="ProjectExplorer.BuildConfiguration.BuildStepList.0">
      <valuemap type="QVariantMap" key="ProjectExplorer.BuildStepList.Step.0">
       <value type="bool" key="ProjectExplorer.BuildStep.Enabled">true</value>
@@ -75,12 +75,12 @@
       <value type="bool" key="Qbs.CleanInstallRoot">false</value>
       <valuemap type="QVariantMap" key="Qbs.Configuration">
        <value type="QString" key="qbs.buildVariant">debug</value>
-       <value type="QString" key="qbs.profile">qtc_Desktop_8ff9dde7</value>
+       <value type="QString" key="qbs.profile">qtc_Desktop_9ea256ce</value>
       </valuemap>
       <value type="bool" key="Qbs.DryKeepGoing">false</value>
       <value type="bool" key="Qbs.DryRun">false</value>
       <value type="bool" key="Qbs.Install">true</value>
-      <value type="int" key="Qbs.MaxJobs">8</value>
+      <value type="int" key="Qbs.MaxJobs">2</value>
       <value type="bool" key="Qbs.ShowCommandLines">false</value>
      </valuemap>
      <value type="int" key="ProjectExplorer.BuildStepList.StepsCount">1</value>
@@ -111,7 +111,7 @@
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Qbs.QbsBuildConfiguration</value>
    </valuemap>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.BuildConfiguration.1">
-    <value type="QString" key="ProjectExplorer.BuildConfiguration.BuildDirectory">/media/Data/WybeData/Projects/C++/OpenFrameWorks/of_v0.9.0_linux64_release/apps/myApps/build-RotoMaze-Desktop-Release</value>
+    <value type="QString" key="ProjectExplorer.BuildConfiguration.BuildDirectory">/home/freek/Downloads/of_v0.9.0_linux64_release/apps/programming/build-RotoMaze-Desktop-Release</value>
     <valuemap type="QVariantMap" key="ProjectExplorer.BuildConfiguration.BuildStepList.0">
      <valuemap type="QVariantMap" key="ProjectExplorer.BuildStepList.Step.0">
       <value type="bool" key="ProjectExplorer.BuildStep.Enabled">true</value>
@@ -121,7 +121,7 @@
       <value type="bool" key="Qbs.CleanInstallRoot">false</value>
       <valuemap type="QVariantMap" key="Qbs.Configuration">
        <value type="QString" key="qbs.buildVariant">release</value>
-       <value type="QString" key="qbs.profile">qtc_Desktop_8ff9dde7</value>
+       <value type="QString" key="qbs.profile">qtc_Desktop_9ea256ce</value>
       </valuemap>
       <value type="bool" key="Qbs.DryKeepGoing">false</value>
       <value type="bool" key="Qbs.DryRun">false</value>
@@ -210,9 +210,9 @@
     <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes"/>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">RotoMaze</value>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName"></value>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Qbs.RunConfiguration:RotoMaze.qtc_Desktop_8ff9dde7---Qbs.RC.NameSeparator---RotoMaze</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Qbs.RunConfiguration:RotoMaze.qtc_Desktop_9ea256ce---Qbs.RC.NameSeparator---RotoMaze</value>
     <value type="QString" key="Qbs.RunConfiguration.CommandLineArguments"></value>
-    <value type="QString" key="Qbs.RunConfiguration.WorkingDirectory">/media/Data/WybeData/Projects/C++/OpenFrameWorks/of_v0.9.0_linux64_release/apps/myApps/RotoMaze/bin</value>
+    <value type="QString" key="Qbs.RunConfiguration.WorkingDirectory">/home/freek/Downloads/of_v0.9.0_linux64_release/apps/programming/RotoMaze/bin</value>
     <value type="uint" key="RunConfiguration.QmlDebugServerPort">3768</value>
     <value type="bool" key="RunConfiguration.UseCppDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseCppDebuggerAuto">true</value>
