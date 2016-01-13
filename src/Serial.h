@@ -14,9 +14,13 @@ public:
     void setup();
     int getAccelerometerValues();
 
+    bool isInitialized() { return initialized; }
+
 private:
 
     ofSerial mySerial;
+
+    bool initialized = false;
 
 };
 

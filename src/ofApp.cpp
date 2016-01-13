@@ -16,9 +16,17 @@ void ofApp::setup(){
 //--------------------------------------------------------------
 void ofApp::update(){
 
-    //Get Accelerometer Values
-    int angle = serial.getAccelerometerValues();
-    //printf("Accelerometer Angle %i", angle);
+    int angle;
+
+    // If the serial connection is ok.
+    if (serial.isInitialized()) {
+        angle = serial.getAccelerometerValues();
+    } else {
+        // Use mouse position for angle.
+        angle = ((float)mouseX / ofGetWidth() * 360) - 180;
+    }
+
+    // printf("Accelerometer Angle %i /n", angle);
 
     // Get the deltatime.
     float dt = ofGetLastFrameTime();
