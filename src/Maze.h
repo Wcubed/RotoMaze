@@ -34,6 +34,8 @@ private:
 
     static const int size = 20; // Size (in blocks) of the maze.
 
+    ofPoint target;
+
     Block blocks[size][size]; // Grid of blocks.
 };
 

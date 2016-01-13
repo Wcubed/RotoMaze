@@ -41,6 +41,9 @@ private:
         {0, 4}, {1, 5}, {2, 6}, {3, 7}
     };
 
+    // Border around the drawing area, so that particles that go off of it can still be drawn.
+    int borderSize = 100;
+
     // Position, scaling and rotation.
     ofVec3f pos;
     float size;

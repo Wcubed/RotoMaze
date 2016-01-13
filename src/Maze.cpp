@@ -13,6 +13,11 @@ Maze::Maze()
     for (int i = 0; i < 50; i++) {
         blocks[int(ofRandom(0, size))][int(ofRandom(0, size))].solid = true;
     }
+
+    // Randomly place the target on an empty spot.
+    do {
+        target.set(int(ofRandom(0, size)), int(ofRandom(0, size)));
+    } while (isSolid(target.x, target.y));
 }
 
 /*
@@ -92,6 +97,14 @@ void Maze::draw(int drawSize) {
     ofDrawLine(0, 0, drawSize, 0);
     ofDrawLine(drawSize, 0, drawSize, drawSize);
     ofDrawLine(0, drawSize, drawSize, drawSize);
+
+    // Draw the target.
+    ofSetColor(0, 255, 255, 150);
+    ofDrawCircle(target * blockSize, blockSize);
+    ofSetColor(0, 255, 255, 200);
+    ofDrawCircle(target * blockSize, blockSize*0.5);
+    ofSetColor(0, 255, 255, 220);
+    ofDrawCircle(target * blockSize, blockSize*0.3);
 
     ofPopStyle();
 }
