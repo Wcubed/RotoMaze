@@ -5,6 +5,9 @@ void ofApp::setup(){
     // Setup the window.
     ofSetWindowShape(1000, 1000);
 
+    // Set framerate to 60.
+    ofSetFrameRate(60);
+
     // Initialize the wireframe cube.
     wireCube.setPos(0, 0, 100);
     wireCube.setSize(ofGetHeight()/2);
@@ -20,7 +23,10 @@ void ofApp::update(){
 
     // If the serial connection is ok.
     if (serial.isInitialized()) {
-        angle = serial.getAccelerometerValues();
+
+        // Update the serial and get the current value.
+        serial.updateSerial();
+        angle = serial.getAccelValue();
     } else {
         // Use mouse position for angle.
         angle = ((float)mouseX / ofGetWidth() * 360) - 180;

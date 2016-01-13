@@ -1,6 +1,13 @@
 #include "Serial.h"
 
 /*
+ * Destructor.
+ */
+Serial::~Serial() {
+    mySerial.close();
+}
+
+/*
  * Setup the Serial Communication with the Arduino
  */
 void Serial::setup(){
@@ -8,57 +15,55 @@ void Serial::setup(){
 }
 
 /*
- * Update the acceleromter values coming from the Arduino
+ * Update the acceleromter values coming from the Arduino.
  */
-int Serial::getAccelerometerValues() {
+void Serial::updateSerial() {
+    while (mySerial.available() > 0) {
 
-    // we want to read 15 bytes
-    int bytesRequired = 32;
-    unsigned char bytes[bytesRequired];
-    int bytesRemaining = bytesRequired;
+        // Get a new byte.
+        int message = mySerial.readByte();
 
-    // loop until we've read everything
-    while ( bytesRemaining > 0 )
-    {
-        // check for data
-        if ( mySerial.available() > 0 )
-        {
-            unsigned char bytesReturned[32];
-            memset(bytesReturned, 0, 32);
 
-            // read from the serial port
-            mySerial.readBytes(bytesReturned, 32);
+        switch (message) {
 
-            string serialData = (char*) bytesReturned; // cast to char
-            printf("d %c \n", ofToChar(serialData));
+        case OF_SERIAL_ERROR:
+            // something bad happened
+            ofLog( OF_LOG_ERROR, "unrecoverable error reading from serial" );
+            // bail out
+            break;
 
-            int rotaryValue = ofToInt(serialData);
-            //printf("rotaryValue %i", rotaryValue);
-            if (rotaryValue != 0) return rotaryValue;
+        case OF_SERIAL_NO_DATA:
+            // Nothing was read, try again.
+            break;
 
-            // try to read - note offset into the bytes[] array, this is so
-            // that we don't overwrite the bytes we already have
-            int bytesArrayOffset = bytesRequired - bytesRemaining;
-            int result = mySerial.readBytes( &bytes[bytesArrayOffset],
-                                             bytesRemaining );
-
-            // check for error code
-            if ( result == OF_SERIAL_ERROR )
+        case 10: // Newline = end of message. Evaluate.
             {
-                // something bad happened
-                ofLog( OF_LOG_ERROR, "unrecoverable error reading from serial" );
-                // bail out
-                break;
+                string data = buffer; // Convert to string.
+
+                //std::cout << data << std::endl;
+
+                accelValue = ofToInt(data); // Convert to int.
+
+                // Reset buffer.
+                bufferPosition = 0;
+                for (int i = 0; i < bufSize; i++) {
+                    buffer[i] = 0; // NULL
+                }
             }
-            else if ( result == OF_SERIAL_NO_DATA )
+            break;
+
+        default: // We have a new byte.
             {
-                // nothing was read, try again
+                // Prevent the buffer index from going out of bounds.
+                if (bufferPosition >= 10) {
+                    bufferPosition = 0;
+                }
+
+                // Append the new byte to the buffer.
+                buffer[bufferPosition] = (char) message;
+                bufferPosition++;
             }
-            else
-            {
-                // we read some data!
-                bytesRemaining -= result;
-            }
+            break;
         }
     }
 }

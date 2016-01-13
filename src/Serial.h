@@ -11,17 +11,27 @@ class Serial
 {
 public:
 
+    ~Serial();
+
     void setup();
-    int getAccelerometerValues();
+    int getAccelValue() { return accelValue; }
+
+    void updateSerial();
 
     bool isInitialized() { return initialized; }
 
 private:
 
+    static const int bufSize = 10;
+
     ofSerial mySerial;
 
     bool initialized = false;
 
+    char buffer[bufSize]; // Buffer to remember half messages between frames.
+    int bufferPosition;
+
+    int accelValue;
 };
 
 #endif //SERIAL_H
