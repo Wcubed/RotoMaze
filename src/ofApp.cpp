@@ -15,7 +15,9 @@ void ofApp::setup(){
 
     serial.setup();
 
-    agent = Agent(&maze, ofPoint(1, 1), wireCube.getFboWidth());
+    agents.push_back(Agent(&maze, ofPoint(1, 1), wireCube.getFboWidth()));
+    //agents.push_back(Agent(&maze, ofPoint(4, 3), wireCube.getFboWidth()));
+    //agents.push_back(Agent(&maze, ofPoint(7, 5), wireCube.getFboWidth()));
 }
 
 //--------------------------------------------------------------
@@ -42,7 +44,9 @@ void ofApp::update(){
     wireCube.setZRot(angle);
 
     // Update the agents.
-    agent.update(dt, angle);
+    for (int i = 0; i < agents.size(); i++) {
+        agents[i].update(dt, angle);
+    }
 
     // Update the cube and the maze.
     maze.update();
@@ -63,7 +67,9 @@ void ofApp::draw(){
     maze.draw(wireCube.getFboWidth());
 
     // Draw agents.
-    agent.draw();
+    for (int i = 0; i < agents.size(); i++) {
+        agents[i].draw();
+    }
 
     wireCube.fboEnd();
 

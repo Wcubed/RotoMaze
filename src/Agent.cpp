@@ -133,7 +133,7 @@ void Agent::update(double dt, float gravAngle) {
 
                 /*
                 // Calculate the angle between the gravity and the direction of the collision.
-                float alpha = (newPos - blockPos).angle(ofVec2f(0, 0));
+                float alpha = (newPos - blockPos).angle(ofVec2f(1, 0));
                 float theta = ofAngleDifferenceDegrees(alpha, gravAngle);
 
                 std::cout << "alpha: " << alpha << "theta: " << theta << std::endl;
@@ -162,12 +162,23 @@ void Agent::draw() {
 
     ofTranslate(screenPos);
 
-    ofSetColor(200, 0, 0);
-
     ofFill();
 
-    // Draw a circle with the size of a single block.
+    // Draw the body.
+    ofSetColor(200, 0, 0);
     ofDrawCircle(0, 0, radius);
+
+    // Draw the eye.
+    ofSetColor(255);
+    ofDrawCircle(0, 0, radius*0.7);
+
+    // Draw the pupil.
+    ofPushMatrix();
+    ofRotate(-vel.angle(ofVec2f(1, 0)));
+    ofSetColor(0);
+
+    ofDrawCircle(radius*0.3, 0, radius*0.3);
+    ofPopMatrix();
 
     // Draws collision modes when debug is enabled.
     if (debug) {

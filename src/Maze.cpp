@@ -78,8 +78,8 @@ void Maze::draw(int drawSize) {
                 ofSetColor(255, 255, 255, 255);
                 ofDrawRectangle(blockSize * x, blockSize * y, blockSize, blockSize);
             } else if (isStandable(x, y)) {
-                ofSetColor(0, 255, 0, 150);
-                ofDrawRectangle(blockSize * x, blockSize * y, blockSize, blockSize);
+                //ofSetColor(0, 255, 0, 150);
+                //ofDrawRectangle(blockSize * x, blockSize * y, blockSize, blockSize);
             }
         }
     }

@@ -23,7 +23,7 @@ WireframeCube::WireframeCube(int _size)
     }
 
     // Allocate the framebuffer.
-    gameScreen.allocate(800, 800, GL_RGBA);
+    gameScreen.allocate(1000, 1000, GL_RGBA, 2);
 
     // ---- Create the plane. ----
     plane.setMode(OF_PRIMITIVE_TRIANGLE_FAN);

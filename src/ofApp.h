@@ -31,7 +31,7 @@ private:
     Maze maze;
     Serial serial;
 
-    Agent agent;
+    vector<Agent> agents;
 
     float angle; // Current angle of the input cube.
 
