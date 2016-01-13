@@ -14,6 +14,8 @@ void ofApp::setup(){
     wireCube.setZRot(10);
 
     serial.setup();
+
+    agent = Agent(ofPoint(0, 0), maze.getSize(), wireCube.getFboWidth());
 }
 
 //--------------------------------------------------------------
@@ -37,12 +39,12 @@ void ofApp::update(){
     // Get the deltatime.
     float dt = ofGetLastFrameTime();
 
-    // Set the angle from the mouse position.
-    //angle = (ofGetMouseX()/1000.0 * 360) - 180;
-
     // Update the cube and the maze with the angle.
     maze.setAngle(angle);
     wireCube.setZRot(angle);
+
+    // Update the agents.
+    agent.update(dt, angle);
 
     // Update the cube and the maze.
     maze.update();
@@ -57,8 +59,12 @@ void ofApp::draw(){
     wireCube.fboBegin();
 
     ofBackground(0, 0, 0, 0);
+    ofEnableSmoothing();
 
     maze.draw(wireCube.getFboWidth());
+
+    // Draw agents.
+    agent.draw();
 
     wireCube.fboEnd();
 

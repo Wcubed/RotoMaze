@@ -17,8 +17,15 @@ public:
     void update();
     void draw(int drawSize);
 
+    void astarSearch();
+
+    // Setters.
+
     void setAngle(float _angle) { angle = _angle; }
 
+    // Getters.
+
+    int getSize() { return size; }
     bool isSolid(int x, int y);
     bool isStandable(int x, int y);
 

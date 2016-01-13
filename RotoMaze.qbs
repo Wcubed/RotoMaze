@@ -12,6 +12,8 @@ Project{
         name: { return FileInfo.baseName(path) }
 
         files: [
+            "src/Agent.cpp",
+            "src/Agent.h",
             "src/Block.cpp",
             "src/Block.h",
             "src/Maze.cpp",
@@ -22,7 +24,7 @@ Project{
             "src/ofApp.cpp",
             "src/ofApp.h",
             "src/Serial.cpp",
-            "src/Serial.h"
+            "src/Serial.h",
         ]
 
         of.addons: [

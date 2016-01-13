@@ -63,7 +63,7 @@ void Maze::update() {
 }
 
 /*
- * Draws the maze in a square with a side of 'drawSize'.
+ * Draws the maze in a square with a side length of 'drawSize'.
  */
 void Maze::draw(int drawSize) {
     ofPushStyle();
@@ -94,6 +94,13 @@ void Maze::draw(int drawSize) {
     ofDrawLine(0, drawSize, drawSize, drawSize);
 
     ofPopStyle();
+}
+
+/*
+ *
+ */
+void Maze::astarSearch() {
+
 }
 
 /*
