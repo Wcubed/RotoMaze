@@ -30,7 +30,7 @@ private:
 
     ofVec2f vel; // Speed.
 
-    int size;
+    int radius;
 
     int mazeSize;
     int screenSize;

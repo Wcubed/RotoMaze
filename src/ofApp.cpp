@@ -15,7 +15,7 @@ void ofApp::setup(){
 
     serial.setup();
 
-    agent = Agent(&maze, ofPoint(0, 0), wireCube.getFboWidth());
+    agent = Agent(&maze, ofPoint(1, 1), wireCube.getFboWidth());
 }
 
 //--------------------------------------------------------------
@@ -56,10 +56,11 @@ void ofApp::draw(){
 
     // ---------- Draw on framebuffer ----------
 
+    ofEnableSmoothing();
+
     wireCube.fboBegin();
 
     ofBackground(0, 0, 0, 0);
-    ofEnableSmoothing();
 
     maze.draw(wireCube.getFboWidth());
 

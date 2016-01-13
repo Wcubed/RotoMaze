@@ -21,7 +21,7 @@ Agent::Agent(Maze* _maze, ofPoint _mazePos, int _screenSize)
     screenSize = _screenSize;
 
     blockSize = screenSize / mazeSize;
-    size = blockSize;
+    radius = blockSize*0.5;
 
     setMazePos(_mazePos);
 }
@@ -30,18 +30,31 @@ Agent::Agent(Maze* _maze, ofPoint _mazePos, int _screenSize)
  * Updates the agent according to the angle of gravity.
  */
 void Agent::update(double dt, float angle) {
-    // Calculate the acceleration due to gravity.
-    ofVec2f acc = ofVec2f(0, 9.81 * blockSize*0.5);
-    acc.rotate(-angle);
-    acc = acc * dt;
 
-    // Update the new velocity.
-    vel += acc;
+    bool collides = false;
 
-    // Update the location with the speed.
-    ofPoint newPos = ofPoint(screenPos);
-    newPos += vel * dt;
-    setScreenPos(newPos);
+    for (int x = mazePos.x -1; x <= mazePos.x +1; x++) {
+        for (int y = mazePos.y -1; y <= mazePos.y +1; y++) {
+            if (collidesWithBlock(ofPoint(x, y))) {
+                collides = true;
+            }
+        }
+    }
+
+    if (!collides) {
+        // Calculate the acceleration due to gravity.
+        ofVec2f acc = ofVec2f(0, 9.81 * blockSize*0.5);
+        acc.rotate(-angle);
+        acc = acc * dt;
+
+        // Update the new velocity.
+        vel += acc;
+
+        // Update the location with the speed.
+        ofPoint newPos = ofPoint(screenPos);
+        newPos += vel * dt;
+        setScreenPos(newPos);
+    }
 }
 
 /*
@@ -52,11 +65,13 @@ void Agent::draw() {
     ofPushStyle();
 
     ofTranslate(screenPos);
-    ofSetColor(200, 0, 0, 255);
+
+    ofSetColor(200, 0, 0);
+
     ofFill();
 
     // Draw a circle with the size of a single block.
-    ofDrawCircle(0, 0, size*0.5);
+    ofDrawCircle(0, 0, radius);
 
     ofPopStyle();
     ofPopMatrix();
@@ -70,7 +85,7 @@ void Agent::setScreenPos(ofPoint newPos) {
     screenPos = newPos;
 
     // Calculate the maze position from the screen position.
-    mazePos.set(int((mazeSize * screenSize)/screenPos.x), int((mazeSize * screenSize)/screenPos.y));
+    mazePos.set(int((screenPos.x / screenSize) * mazeSize), int((screenPos.y / screenSize) * mazeSize));
 }
 
 /*
@@ -93,9 +108,25 @@ bool Agent::collidesWithBlock(ofPoint pos) {
     // First, check if the block is solid.
     if (maze->isSolid(pos.x, pos.y)) {
         // Get the screenspace coordinate of the block.
-        ofPoint sPos = toScreenSpace(pos);
+        ofPoint sBlockPos = toScreenSpace(pos);
 
+        // Get the distance between the agent and the block.
+        ofVec2f diff = screenPos - sBlockPos;
 
+        if (diff.x < 0) {
+            diff.x = -diff.x;
+        }
+        if (diff.y < 0) {
+            diff.y = -diff.y;
+        }
+
+        // Check for collision.
+        if ((diff.x < radius + blockSize*0.5 && diff.y < blockSize*0.5) || // Left and right.
+            (diff.y < radius + blockSize*0.5 && diff.x < blockSize*0.5) || // Up and down.
+            (ofDist(0, 0, diff.x - blockSize*0.5, diff.y - blockSize*0.5) < radius)) // Corners.
+        {
+            result = true;
+        }
     } else {
         // Not solid, so we can't collide.
         result = false;
