@@ -11,14 +11,14 @@ public:
     Agent();
     Agent(Maze* _maze, ofPoint _mazePos, int _screenSize);
 
-    void update(double dt, float angle);
+    void update(double dt, float gravAngle);
     void draw();
 
     void setScreenPos(ofPoint newPos);
     void setMazePos(ofPoint newPos);
 
 private:
-    bool collidesWithBlock(ofPoint pos);
+    bool collidesWithBlock(ofPoint myScreenPos, ofPoint blockmazePos);
 
     ofPoint toScreenSpace(ofPoint pos);
 
@@ -35,6 +35,13 @@ private:
     int mazeSize;
     int screenSize;
     float blockSize;
+    float halfBSize;
+
+    bool horCol;
+    bool verCol;
+    bool corCol;
+
+    static const bool debug = false;
 };
 
 #endif // AGENT_H

@@ -21,8 +21,6 @@ void ofApp::setup(){
 //--------------------------------------------------------------
 void ofApp::update(){
 
-    int angle;
-
     // If the serial connection is ok.
     if (serial.isInitialized()) {
 
@@ -87,7 +85,15 @@ void ofApp::draw(){
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-
+    // Key debugging, only active when there is no accelerometer.
+    if (!serial.isInitialized()) {
+        if (key == 'a') {
+            angle -= 1;
+        }
+        if (key == 'd') {
+            angle += 1;
+        }
+    }
 }
 
 //--------------------------------------------------------------

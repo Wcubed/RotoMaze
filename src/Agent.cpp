@@ -21,7 +21,8 @@ Agent::Agent(Maze* _maze, ofPoint _mazePos, int _screenSize)
     screenSize = _screenSize;
 
     blockSize = screenSize / mazeSize;
-    radius = blockSize*0.5;
+    halfBSize = blockSize*0.5;
+    radius = blockSize*0.4;
 
     setMazePos(_mazePos);
 }
@@ -29,32 +30,127 @@ Agent::Agent(Maze* _maze, ofPoint _mazePos, int _screenSize)
 /*
  * Updates the agent according to the angle of gravity.
  */
-void Agent::update(double dt, float angle) {
+void Agent::update(double dt, float gravAngle) {
 
     bool collides = false;
 
+    // Calculate the acceleration due to gravity.
+    ofVec2f acc = ofVec2f(0, 9.81 * halfBSize);
+    acc.rotate(-gravAngle);
+    acc = acc * dt;
+
+    // Update the new velocity.
+    vel += acc;
+
+    // Update the location with the speed.
+    ofPoint newPos = ofPoint(screenPos);
+    newPos += vel * dt;
+
+    ofPoint noCollPos = ofPoint(screenPos);
+
+    horCol = false;
+    verCol = false;
+    corCol = false;
+
+    // Make sure this new location doesn't collide with anything.
     for (int x = mazePos.x -1; x <= mazePos.x +1; x++) {
         for (int y = mazePos.y -1; y <= mazePos.y +1; y++) {
-            if (collidesWithBlock(ofPoint(x, y))) {
-                collides = true;
+            if (collidesWithBlock(newPos, ofPoint(x, y))) {
+                // Collision! Change the velocity accordingly.
+
+                // Screenspace position of the block we have a collision with.
+                ofPoint blockPos = toScreenSpace(ofPoint(x, y));
+
+                if (newPos.x <= blockPos.x + halfBSize && newPos.x >= blockPos.x - halfBSize) {
+                    // "Vertical" collision.
+                    // If we are moving in the direction of the block: stop the y movement.
+                    if (ofSign(blockPos.y - newPos.y) == ofSign(vel.y)) {
+                        vel.y = 0;
+                    }
+
+                    verCol = true;
+
+                    // Get a position that we know is not inside the block.
+                    if (newPos.y < blockPos.y) {
+                        noCollPos.y = blockPos.y - halfBSize - radius;
+                    } else {
+                        noCollPos.y = blockPos.y + halfBSize + radius;
+                    }
+
+                } else if (newPos.y <= blockPos.y + halfBSize && newPos.y >= blockPos.y - halfBSize) {
+                    // "Horizontal" collision.
+                    // If we are moving in the direction of the block: stop the x movement.
+                    if (ofSign(blockPos.x - newPos.x) == ofSign(vel.x)) {
+                        vel.x = 0;
+                    }
+
+                    horCol = true;
+
+                    // Get a position that we know is not inside the block.
+                    if (newPos.x < blockPos.x) {
+                        noCollPos.x = blockPos.x - halfBSize - radius;
+                    } else {
+                        noCollPos.x = blockPos.x + halfBSize + radius;
+                    }
+                } else {
+                    // Corner collision.
+
+                    // Check if we do not already have a horizontal or vertical collision.
+
+                    if (!(horCol || verCol)) {
+
+                        corCol = true;
+
+                        // Get the distance from the block center.
+                        ofVec2f dist = newPos - blockPos;
+
+                        if (dist.x < 0) {
+                            dist.x = -dist.x;
+                        }
+                        if (dist.y < 0) {
+                            dist.y = -dist.y;
+                        }
+
+                        // Get the distance (and the angle of attack) from the corner.
+                        ofVec2f cornerDist = ofVec2f(dist.x - halfBSize, dist.y - halfBSize);
+
+                        if (cornerDist.x > cornerDist.y) {
+                            // "Horizontal" collision.
+                            // If we are moving in the direction of the block: stop the x movement.
+                            if (ofSign(blockPos.x - newPos.x) == ofSign(vel.x)) {
+                                vel.x = 0;
+                            }
+                        } else {
+                            // "Vertical" collision.
+                            // If we are moving in the direction of the block: stop the y movement.
+                            if (ofSign(blockPos.y - newPos.y) == ofSign(vel.y)) {
+                                vel.y = 0;
+                            }
+
+                        }
+                    }
+                }
+
+                /*
+                // Calculate the angle between the gravity and the direction of the collision.
+                float alpha = (newPos - blockPos).angle(ofVec2f(0, 0));
+                float theta = ofAngleDifferenceDegrees(alpha, gravAngle);
+
+                std::cout << "alpha: " << alpha << "theta: " << theta << std::endl;
+
+                // If this block is a surface.
+                if (-45 < theta && theta < 45) {
+                    vel = ofVec2f(0, 0);
+                }*/
             }
         }
     }
 
-    if (!collides) {
-        // Calculate the acceleration due to gravity.
-        ofVec2f acc = ofVec2f(0, 9.81 * blockSize*0.5);
-        acc.rotate(-angle);
-        acc = acc * dt;
-
-        // Update the new velocity.
-        vel += acc;
-
-        // Update the location with the speed.
-        ofPoint newPos = ofPoint(screenPos);
-        newPos += vel * dt;
-        setScreenPos(newPos);
-    }
+    // Calculate the new position again.
+    // But this time with a velocity vector that won't place us inside a wall.
+    newPos = ofPoint(noCollPos);
+    newPos += vel * dt;
+    setScreenPos(newPos);
 }
 
 /*
@@ -72,6 +168,22 @@ void Agent::draw() {
 
     // Draw a circle with the size of a single block.
     ofDrawCircle(0, 0, radius);
+
+    // Draws collision modes when debug is enabled.
+    if (debug) {
+        if (horCol) {
+            ofSetColor(0, 200, 0);
+            ofDrawRectangle(-radius*0.5, -radius*0.2, radius, radius*0.4);
+        }
+        if (verCol) {
+            ofSetColor(0, 0, 200);
+            ofDrawRectangle(-radius*0.2, -radius*0.5, radius*0.4, radius);
+        }
+        if (corCol) {
+            ofSetColor(0, 200, 200);
+            ofDrawCircle(0, 0, radius*0.4);
+        }
+    }
 
     ofPopStyle();
     ofPopMatrix();
@@ -102,28 +214,28 @@ void Agent::setMazePos(ofPoint newPos) {
 /*
  * Checks if the agent is colliding with a block.
  */
-bool Agent::collidesWithBlock(ofPoint pos) {
-    bool result;
+bool Agent::collidesWithBlock(ofPoint myScreenPos, ofPoint blockmazePos) {
+    bool result = false;
 
     // First, check if the block is solid.
-    if (maze->isSolid(pos.x, pos.y)) {
+    if (maze->isSolid(blockmazePos.x, blockmazePos.y)) {
         // Get the screenspace coordinate of the block.
-        ofPoint sBlockPos = toScreenSpace(pos);
+        ofPoint sBlockPos = toScreenSpace(blockmazePos);
 
         // Get the distance between the agent and the block.
-        ofVec2f diff = screenPos - sBlockPos;
+        ofVec2f dist = myScreenPos - sBlockPos;
 
-        if (diff.x < 0) {
-            diff.x = -diff.x;
+        if (dist.x < 0) {
+            dist.x = -dist.x;
         }
-        if (diff.y < 0) {
-            diff.y = -diff.y;
+        if (dist.y < 0) {
+            dist.y = -dist.y;
         }
 
         // Check for collision.
-        if ((diff.x < radius + blockSize*0.5 && diff.y < blockSize*0.5) || // Left and right.
-            (diff.y < radius + blockSize*0.5 && diff.x < blockSize*0.5) || // Up and down.
-            (ofDist(0, 0, diff.x - blockSize*0.5, diff.y - blockSize*0.5) < radius)) // Corners.
+        if ((dist.x < radius + halfBSize && dist.y < halfBSize) || // Left and right.
+            (dist.y < radius + halfBSize && dist.x < halfBSize) || // Up and down.
+            (ofDist(0, 0, dist.x - halfBSize, dist.y - halfBSize) < radius)) // Corners.
         {
             result = true;
         }
