@@ -15,7 +15,7 @@ void ofApp::setup(){
 
     serial.setup();
 
-    agent = Agent(ofPoint(0, 0), maze.getSize(), wireCube.getFboWidth());
+    agent = Agent(&maze, ofPoint(0, 0), wireCube.getFboWidth());
 }
 
 //--------------------------------------------------------------
@@ -37,7 +37,7 @@ void ofApp::update(){
     // printf("Accelerometer Angle %i /n", angle);
 
     // Get the deltatime.
-    float dt = ofGetLastFrameTime();
+    double dt = ofGetLastFrameTime();
 
     // Update the cube and the maze with the angle.
     maze.setAngle(angle);
