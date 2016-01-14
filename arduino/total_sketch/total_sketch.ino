@@ -78,8 +78,13 @@ String str;
 const int xpin = A0;                  // x-axis of the accelerometer
 const int ypin = A1;                  // y-axis
 const int zpin = A2;                  // z-axis (only on 3-axis models)
-int valX;
-int scale = 180;                 //The variable scale is set to the full scale of the accelerometer measured in g forces. It is set to 3 for the ADXL337 and set to 200 for the ADXL377, since the sensors measure a ±3g and ±200g range respectively.
+int scale = 1800;                 //The variable scale is set to the full scale of the accelerometer measured in g forces. It is set to 3 for the ADXL337 and set to 200 for the ADXL377, since the sensors measure a ±3g and ±200g range respectively.
+
+int sensVal;           // for raw sensor values 
+float filterVal;       // this determines smoothness  - .0001 is max  1 is off (no smoothing)
+float smoothedVal;     // this holds the last loop value just use a unique variable for every different sensor that needs smoothing
+float smoothedVal2;   // this would be the buffer value for another sensor if you needed to smooth two different sensors - not used in this sketch
+int i;              // loop counters or demo   
 
 int zvalue_old;                  // z-axis (only on 3-axis models)
 int zvalue;
@@ -202,18 +207,24 @@ void loop() {
                 }
         }
         
-        
-   //// Accelerometer
-   // print the sensor values:
-   
-   int valX= analogRead(xpin);
-   /*int sumValX = 0;
-   
-   for (int i = 0; i < 10; i++) { // Take 10 to average out the values
-       sumValX = sumValX + valX;
-   }*/
-    int mapValX = map(valX, 0, 675, -scale, scale); // 3.3/5 * 1023 =~ 675
-    Serial.println(mapValX);
+   // i < 250 for slow response
+   for (i = 0; i < 250; i++){    // substitute some different filter values
+    filterVal = i * .15; 
+
+      sensVal = analogRead(xpin);   //this is what one would do normally
+      smoothedVal =  smooth(sensVal, filterVal, smoothedVal);   // second parameter determines smoothness  - 0 is off,  .9999 is max smooth 
+
+      //Serial.print(sensVal);
+      //Serial.print("   ");
+      //Serial.println(smoothedVal, DEC);
+      int mapValX = map(smoothedVal, 0, 675, -scale, scale); // 3.3/5 * 1023 =~ 675
+      Serial.println(mapValX);
+      //Serial.print("      ");
+      //Serial.print("filterValue * 100 =  ");   // print doesn't work with floats
+      //Serial.println(filterVal * 100, DEC);
+      
+      //delay(30);
+}
     
 }
 
@@ -226,4 +237,20 @@ void loop() {
       }
    }
    return false;
+}
+
+
+int smooth(int data, float filterVal, float smoothedVal){
+
+
+  if (filterVal > 1){      // check to make sure param's are within range
+    filterVal = .99;
+  }
+  else if (filterVal <= 0){
+    filterVal = 0;
+  }
+
+  smoothedVal = (data * (1 - filterVal)) + (smoothedVal  *  filterVal);
+
+  return (int)smoothedVal;
 }

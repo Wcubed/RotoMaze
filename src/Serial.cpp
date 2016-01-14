@@ -14,6 +14,7 @@ void Serial::setup(){
     initialized =  mySerial.setup("/dev/ttyACM0", 9600); //open the first device and talk to it at 9600 baud
 }
 
+
 /*
  * Update the acceleromter values coming from the Arduino.
  */
@@ -42,7 +43,11 @@ void Serial::updateSerial() {
 
                 //std::cout << data << std::endl;
 
-                accelValue = ofToInt(data); // Convert to int.
+                int accelValueTemp = ofToInt(data); // Convert to int.
+
+                accelValue = accelValueTemp / 10;
+
+                printf("accelValue, %i", accelValue);
 
                 // Reset buffer.
                 bufferPosition = 0;
