@@ -2,10 +2,13 @@
 
 Maze::Maze()
 {
+    // Create the actions.
+    createActions();
+
     // Create all the blocks.
     for (int x = 0; x < size; x++) {
         for (int y = 0; y < size; y++) {
-            blocks[x][y] = Block();
+            blocks[x][y] = Block(x, y);
         }
     }
 
@@ -86,6 +89,11 @@ void Maze::draw(int drawSize) {
                 ofSetColor(0, 255, 0, 150);
                 ofDrawRectangle(blockSize * x, blockSize * y, blockSize, blockSize);
             }
+
+            for (BlockLink link : blocks[x][y].links) {
+                ofSetColor(255, 255, 0);
+                ofDrawLine((x+0.5) * blockSize, (y+0.5) * blockSize, (link.block->x+0.5) * blockSize, (link.block->y+0.5) * blockSize);
+            }
         }
     }
 
@@ -116,8 +124,63 @@ void Maze::draw(int drawSize) {
 /*
  *
  */
-void Maze::astarSearch() {
+Block* Maze::astarSearch(int x, int y) {
+    updatePaths(x, y);
 
+    float shortestDist = ofVec2f(x, y).distance(target);
+    Block* nextBlock = &blocks[x][y];
+
+    for (BlockLink link : blocks[x][y].links) {
+        Block* block = link.block;
+
+        float targetDist = block->pos.distance(target);
+
+        if (targetDist < shortestDist || shortestDist < 0) {
+            shortestDist == targetDist;
+            nextBlock = block;
+        }
+    }
+
+    return nextBlock;
+}
+
+/*
+ *
+ */
+void Maze::updatePaths(int x, int y) {
+
+    Block* block = &blocks[x][y];
+
+    // Clear the old data.
+    block->links.clear();
+
+    for (Action action : actions) {
+        // Test for the unmirrored version.
+        if (isActionFeasible(action, ofPoint(x, y), angle, false)) {
+            BlockLink link;
+
+            ofPoint targetPos = action.getAbsoluteTarget(ofPoint(x, y), angle, false);
+
+            // Add the actions target to the links.
+            link.block = &blocks[int(targetPos.x)][int(targetPos.y)];
+            link.length = ofPoint(x, y).distance(link.block->pos);
+
+            block->links.push_back(link);
+        }
+
+        // Test for mirrored version.
+        if (isActionFeasible(action, ofPoint(x, y), angle, true)) {
+            BlockLink link;
+
+            ofPoint targetPos = action.getAbsoluteTarget(ofPoint(x, y), angle, true);
+
+            // Add the actions target to the links.
+            link.block = &blocks[int(targetPos.x)][int(targetPos.y)];
+            link.length = ofPoint(x, y).distance(link.block->pos);
+
+            block->links.push_back(link);
+        }
+    }
 }
 
 /*
@@ -146,4 +209,57 @@ bool Maze::isStandable(int x, int y) {
     } else {
         return false;
     }
+}
+
+/*
+ * Initializes all possible actions.
+ */
+void Maze::createActions() {
+    // 0T
+    // XX
+    Action act = Action(ofPoint(1, 0), vector<ActionReq>());
+    act.reqs.push_back(ActionReq{ofPoint(1, 1), true});
+    act.reqs.push_back(ActionReq{ofPoint(0, 1), true});
+    actions.push_back(act);
+}
+
+/*
+ * Tests if an action is feasible.
+ *
+ * action: action to test.
+ * origin: Point to test from.
+ * gravAngle: Angle of gravity.
+ * mirrored: Whether we are evaluating the mirrored version of this action.
+ */
+bool Maze::isActionFeasible(Action action, ofPoint origin, float gravAngle, bool mirrored) {
+    bool feasible = true;
+
+    for (ActionReq req : action.reqs) {
+        ofPoint testPos = ofPoint(req.first);
+
+        // If this is the mirrored version of the action:
+        if (mirrored) {
+            // Flip the x value.
+            testPos.x = -testPos.x;
+        }
+
+        // Rotate the required position according to gravity.
+        testPos = ofVec2f(testPos).getRotated(-gravAngle);
+
+        // Round it to whole numbers.
+        testPos.x = round(testPos.x);
+        testPos.y = round(testPos.y);
+
+        // Add the the origin to the test position to make it absolute.
+        testPos += origin;
+
+        // Check if the location in the maze is solid/not solid according to requirements.
+        // If any requirement isn't true, this action isn't feasible.
+        if (isSolid(testPos.x, testPos.y) != req.second) {
+            feasible = false;
+            break;
+        }
+    }
+
+    return feasible;
 }

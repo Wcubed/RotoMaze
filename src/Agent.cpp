@@ -24,6 +24,8 @@ Agent::Agent(Maze* _maze, ofPoint _mazePos, int _screenSize)
     halfBSize = blockSize*0.5;
     radius = blockSize*0.4;
 
+    speed = radius*10;
+
     setMazePos(_mazePos);
 }
 
@@ -149,7 +151,14 @@ void Agent::update(double dt, float gravAngle) {
 
                 // Do we have traction here?
                 if (alpha < 45 && alpha > -45) {
-                    vel.set(0, 0);
+                    vel.set(1, 0);
+
+                    // Search for the next best block.
+                    Block* nextBlock = maze->astarSearch(mazePos.x, mazePos.y);
+
+                    // Set the speed towards it.
+                    vel = nextBlock->pos - mazePos;
+                    vel.scale(speed);
                 }
             }
         }

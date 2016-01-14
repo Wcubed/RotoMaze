@@ -4,6 +4,7 @@
 #include "ofMain.h"
 
 #include "Block.h"
+#include "Action.h"
 
 
 /*
@@ -17,7 +18,8 @@ public:
     void update();
     void draw(int drawSize);
 
-    void astarSearch();
+    Block* astarSearch(int x, int y);
+    void updatePaths(int x, int y);
 
     // Setters.
 
@@ -30,13 +32,20 @@ public:
     bool isStandable(int x, int y);
 
 private:
-    float angle; // How much the maze is rotated. Most important for gravity.
+    void createActions();
+    bool isActionFeasible(Action action, ofPoint origin, float gravAngle, bool mirrored);
 
+public:
     static const int size = 20; // Size (in blocks) of the maze.
+
+private:
+    float angle; // How much the maze is rotated. Most important for gravity.
 
     ofPoint target;
 
     Block blocks[size][size]; // Grid of blocks.
+
+    vector<Action> actions; // List of all the actions an agent can take.
 };
 
 #endif // MAZE_H

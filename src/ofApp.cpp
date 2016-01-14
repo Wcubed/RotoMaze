@@ -15,7 +15,7 @@ void ofApp::setup(){
 
     serial.setup();
 
-    agents.push_back(Agent(&maze, ofPoint(1, 1), wireCube.getFboWidth()));
+    agents.push_back(Agent(&maze, ofPoint(maze.size-1, 0), wireCube.getFboWidth()));
     //agents.push_back(Agent(&maze, ofPoint(4, 3), wireCube.getFboWidth()));
     //agents.push_back(Agent(&maze, ofPoint(7, 5), wireCube.getFboWidth()));
 }
@@ -32,6 +32,7 @@ void ofApp::update(){
         //printf("Angle: %i", angle);
     } else {
         // Use mouse position for angle.
+        //angle = 90;
         angle = ((float)mouseX / ofGetWidth() * 360) - 180;
     }
 
@@ -39,6 +40,7 @@ void ofApp::update(){
 
     // Get the deltatime.
     double dt = ofGetLastFrameTime();
+    //std::cout << 1 / dt << std::endl;
 
     // Update the cube and the maze with the angle.
     maze.setAngle(angle);
