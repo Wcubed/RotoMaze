@@ -131,13 +131,13 @@ void Maze::draw(int drawSize) {
 /*
  *
  */
-Block* Maze::astarSearch(int x, int y) {
-    updatePaths(x, y);
+Block* Maze::astarSearch(int originX, int originY) {
+    /*updatePaths(originX, originY);
 
-    float shortestDist = ofVec2f(x, y).distance(target);
-    Block* nextBlock = &blocks[x][y];
+    float shortestDist = ofVec2f(originX, originY).distance(target);
+    Block* nextBlock = &blocks[originX][originY];
 
-    for (BlockLink link : blocks[x][y].links) {
+    for (BlockLink link : blocks[originX][originY].links) {
         Block* block = link.block;
 
         float targetDist = block->pos.distance(target);
@@ -146,7 +146,7 @@ Block* Maze::astarSearch(int x, int y) {
             shortestDist == targetDist;
             nextBlock = block;
         }
-    }
+    }*/
 
     // Astar search.
 
@@ -161,15 +161,16 @@ Block* Maze::astarSearch(int x, int y) {
     }
     // Empty the queue and add the starting block.
     astarQueue.empty();
-    astarQueue.push(&blocks[x][y]);
+    astarQueue.push(&blocks[originX][originY]);
+    blocks[originX][originY].visited = true;
 
-    bool done = false;
+    bool foundTarget = false;
 
-    while (!done) {
+    while (true) {
 
         // If queue is empty, end the search.
         if (astarQueue.empty()) {
-            done = true;
+            foundTarget = false;
             break;
         }
 
@@ -179,7 +180,7 @@ Block* Maze::astarSearch(int x, int y) {
 
         // If the block is the target, end the search.
         if (current->pos == target) {
-            done = true;
+            foundTarget = true;
             break;
         }
 
@@ -212,10 +213,46 @@ Block* Maze::astarSearch(int x, int y) {
             // Add it to the queue.
             astarQueue.push(link.block);
         }
-
     }
 
-    return nextBlock;
+    // Search complete!
+    // Now we need to go back over the path to find out what the first step is.
+
+    // Figure out which block is the closest to the target.
+    Block* closestBlock = &blocks[originX][originY];
+
+    if (foundTarget) {
+        // If we have found the target, the closest to the target is of course the target itself.
+        closestBlock = &blocks[int(target.x)][int(target.y)];
+    } else {
+        // Find the closest we got to the target.
+        float closestDist = blocks[originX][originY].distToTarget;
+
+        // Go over all the blocks.
+        for (int x = 0; x < size; x++) {
+            for (int y = 0; y < size; y++) {
+                // Is the block in the search tree?
+                if (blocks[x][y].visited) {
+                    // Is it closer to the target than the closest one up to now?
+                    if (blocks[x][y].distToTarget < closestDist) {
+                        // Set this block as the new closes one.
+                        closestBlock = &blocks[x][y];
+                        closestDist = closestBlock->distToTarget;
+                    }
+                }
+            }
+        }
+    }
+
+    // Retrace steps until we are back at the origin.
+    Block* lastBlock = closestBlock;
+
+    while (!(closestBlock->x == originX && closestBlock->y == originY)) {
+        lastBlock = closestBlock;
+        closestBlock = closestBlock->parent;
+    }
+
+    return lastBlock;
 }
 
 /*

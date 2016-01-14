@@ -19,7 +19,7 @@ public:
     void update();
     void draw(int drawSize);
 
-    Block* astarSearch(int x, int y);
+    Block* astarSearch(int originX, int originY);
     void updatePaths(int x, int y);
 
     // Setters.
