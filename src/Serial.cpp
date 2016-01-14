@@ -47,7 +47,7 @@ void Serial::updateSerial() {
 
                 accelValue = accelValueTemp / 10;
 
-                printf("accelValue, %i", accelValue);
+                //printf("accelValue, %i", accelValue);
 
                 // Reset buffer.
                 bufferPosition = 0;

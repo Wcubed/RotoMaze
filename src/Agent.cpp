@@ -134,26 +134,18 @@ void Agent::update(double dt, float gravAngle) {
                 // Get the distance from the block center.
                 ofVec2f dist = newPos - blockPos;
 
-                if (dist.x < 0) {
-                    dist.x = -dist.x;
-                }
-                if (dist.y < 0) {
-                    dist.y = -dist.y;
-                }
-
                 // Take only the distance to the edge.
-                if (dist.x > dist.y) {
+                if (dist.x * dist.x > dist.y * dist.y) {
                     dist.y = 0;
                 } else {
                     dist.x = 0;
+                    dist.y = -dist.y;
                 }
 
                 ofVec2f gravVec = ofVec2f(0, 1);
                 gravVec.rotate(gravAngle);
 
                 float alpha = dist.angle(gravVec);
-
-                std::cout << dist.x << " " << dist.y << " :::: " << gravVec.x << " " << gravVec.y << " :::: " << alpha << std::endl;
 
                 // Do we have traction here?
                 if (alpha < 45 && alpha > -45) {

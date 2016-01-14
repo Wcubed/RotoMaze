@@ -29,7 +29,7 @@ void ofApp::update(){
         // Update the serial and get the current value.
         serial.updateSerial();
         angle = serial.getAccelValue();
-        printf("Angle: %i", angle);
+        //printf("Angle: %i", angle);
     } else {
         // Use mouse position for angle.
         angle = ((float)mouseX / ofGetWidth() * 360) - 180;
