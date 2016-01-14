@@ -131,17 +131,34 @@ void Agent::update(double dt, float gravAngle) {
                     }
                 }
 
-                /*
-                // Calculate the angle between the gravity and the direction of the collision.
-                float alpha = (newPos - blockPos).angle(ofVec2f(1, 0));
-                float theta = ofAngleDifferenceDegrees(alpha, gravAngle);
+                // Get the distance from the block center.
+                ofVec2f dist = newPos - blockPos;
 
-                std::cout << "alpha: " << alpha << "theta: " << theta << std::endl;
+                if (dist.x < 0) {
+                    dist.x = -dist.x;
+                }
+                if (dist.y < 0) {
+                    dist.y = -dist.y;
+                }
 
-                // If this block is a surface.
-                if (-45 < theta && theta < 45) {
-                    vel = ofVec2f(0, 0);
-                }*/
+                // Take only the distance to the edge.
+                if (dist.x > dist.y) {
+                    dist.y = 0;
+                } else {
+                    dist.x = 0;
+                }
+
+                ofVec2f gravVec = ofVec2f(0, 1);
+                gravVec.rotate(gravAngle);
+
+                float alpha = dist.angle(gravVec);
+
+                std::cout << dist.x << " " << dist.y << " :::: " << gravVec.x << " " << gravVec.y << " :::: " << alpha << std::endl;
+
+                // Do we have traction here?
+                if (alpha < 45 && alpha > -45) {
+                    vel.set(0, 0);
+                }
             }
         }
     }

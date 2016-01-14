@@ -83,8 +83,8 @@ void Maze::draw(int drawSize) {
                 ofSetColor(255, 255, 255, 255);
                 ofDrawRectangle(blockSize * x, blockSize * y, blockSize, blockSize);
             } else if (isStandable(x, y)) {
-                //ofSetColor(0, 255, 0, 150);
-                //ofDrawRectangle(blockSize * x, blockSize * y, blockSize, blockSize);
+                ofSetColor(0, 255, 0, 150);
+                ofDrawRectangle(blockSize * x, blockSize * y, blockSize, blockSize);
             }
         }
     }
@@ -98,13 +98,17 @@ void Maze::draw(int drawSize) {
     ofDrawLine(drawSize, 0, drawSize, drawSize);
     ofDrawLine(0, drawSize, drawSize, drawSize);
 
+    // Draw reference point.
+    ofSetColor(0, 0, 255);
+    ofDrawCircle(-50, -50, 25);
+
     // Draw the target.
     ofSetColor(0, 255, 255, 150);
-    ofDrawCircle(target * blockSize, blockSize);
+    ofDrawCircle((target.x + 0.5) * blockSize, (target.y + 0.5) * blockSize, blockSize);
     ofSetColor(0, 255, 255, 200);
-    ofDrawCircle(target * blockSize, blockSize*0.5);
+    ofDrawCircle((target.x + 0.5) * blockSize, (target.y + 0.5) * blockSize, blockSize*0.5);
     ofSetColor(0, 255, 255, 220);
-    ofDrawCircle(target * blockSize, blockSize*0.3);
+    ofDrawCircle((target.x + 0.5) * blockSize, (target.y + 0.5) * blockSize, blockSize*0.3);
 
     ofPopStyle();
 }
