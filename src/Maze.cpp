@@ -129,9 +129,11 @@ void Maze::draw(int drawSize) {
 }
 
 /*
+ * Executes an astarsearch on the maze, using the Actions as links between the blocks.
  *
+ * Returns the velocity required for the next step.
  */
-Block* Maze::astarSearch(int originX, int originY) {
+ofVec2f Maze::astarSearch(int originX, int originY) {
     /*updatePaths(originX, originY);
 
     float shortestDist = ofVec2f(originX, originY).distance(target);
@@ -252,7 +254,21 @@ Block* Maze::astarSearch(int originX, int originY) {
         closestBlock = closestBlock->parent;
     }
 
-    return lastBlock;
+    // Get the velocity required to get from the origin to the next block.
+
+    ofVec2f neededVel = ofVec2f(0, 0);
+
+    if (!(lastBlock->x == originX && lastBlock->y == originY)) {
+        // Get the link that links the origin with the next block.
+        for (BlockLink link : blocks[originX][originY].links) {
+            if (link.block == lastBlock) {
+                // This is the velocity we need.
+                neededVel = ofVec2f(link.neededVel);
+            }
+        }
+    }
+
+    return neededVel;
 }
 
 /*
@@ -275,6 +291,7 @@ void Maze::updatePaths(int x, int y) {
             // Add the actions target to the links.
             link.block = &blocks[int(targetPos.x)][int(targetPos.y)];
             link.length = ofPoint(x, y).distance(link.block->pos);
+            link.neededVel = action.getNeededVel(angle, false);
 
             block->links.push_back(link);
         }
@@ -288,6 +305,7 @@ void Maze::updatePaths(int x, int y) {
             // Add the actions target to the links.
             link.block = &blocks[int(targetPos.x)][int(targetPos.y)];
             link.length = ofPoint(x, y).distance(link.block->pos);
+            link.neededVel = action.getNeededVel(angle, true);
 
             block->links.push_back(link);
         }
@@ -342,7 +360,7 @@ bool Maze::isActionFeasible(Action action, ofPoint origin, float gravAngle, bool
             testPos.x = -testPos.x;
         }
 
-        // Rotate the required position according to gravity.
+        // Compensate for the angle of gravity (rotate the other way)
         testPos = ofVec2f(testPos).getRotated(-gravAngle);
 
         // Round it to whole numbers.
@@ -377,7 +395,7 @@ bool Maze::isActionFeasible(Action action, ofPoint origin, float gravAngle, bool
 void Maze::createActions() {
     // 0T
     // XX
-    Action act = Action(ofPoint(1, 0), vector<ActionReq>());
+    Action act = Action(ofPoint(1, 0), ofVec2f(4, 0), vector<ActionReq>());
     act.reqs.push_back(ActionReq{ofPoint(1, 1), true});
     actions.push_back(act);
 
@@ -385,7 +403,7 @@ void Maze::createActions() {
     // 0X
     // X
 
-    act = Action(ofPoint(1, -1), vector<ActionReq>());
+    act = Action(ofPoint(1, -1), ofVec2f(4, 0).rotate(-60), vector<ActionReq>());
     act.reqs.push_back(ActionReq{ofPoint(0, -1), false});
     act.reqs.push_back(ActionReq{ofPoint(1, 0), true});
     actions.push_back(act);
@@ -394,7 +412,7 @@ void Maze::createActions() {
     // XT
     //  X
 
-    act = Action(ofPoint(1, 1), vector<ActionReq>());
+    act = Action(ofPoint(1, 1), ofVec2f(3, 0), vector<ActionReq>());
     act.reqs.push_back(ActionReq{ofPoint(1, 0), false});
     act.reqs.push_back(ActionReq{ofPoint(1, 2), true});
     actions.push_back(act);

@@ -11,6 +11,7 @@ class Block;
 struct BlockLink {
     Block* block;
     int length;
+    ofVec2f neededVel;
 };
 
 class Block

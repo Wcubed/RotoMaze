@@ -37,6 +37,7 @@ void Agent::update(double dt, float gravAngle) {
     bool collides = false;
 
     // Calculate the acceleration due to gravity.
+    // A block is two meters high. On this scale falling looks good.
     ofVec2f acc = ofVec2f(0, 9.81 * halfBSize);
     acc.rotate(-gravAngle);
     acc = acc * dt;
@@ -153,12 +154,11 @@ void Agent::update(double dt, float gravAngle) {
                 if (alpha < 45 && alpha > -45) {
                     vel.set(1, 0);
 
-                    // Search for the next best block.
-                    Block* nextBlock = maze->astarSearch(mazePos.x, mazePos.y);
+                    // Search for the next best block and get the required velocity.
+                    ofVec2f neededVel = maze->astarSearch(mazePos.x, mazePos.y);
 
-                    // Set the speed towards it.
-                    vel = nextBlock->pos - mazePos;
-                    vel.scale(maxSpeed);
+                    // Scale the required velocity to match the block sizes.
+                    vel = neededVel * blockSize;
                 }
             }
         }
