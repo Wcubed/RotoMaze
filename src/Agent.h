@@ -31,7 +31,7 @@ private:
     ofVec2f vel; // Speed.
 
     int radius;
-    int speed;
+    int maxSpeed; // Maximum speed at which the agent can roll.
 
     int mazeSize;
     int screenSize;

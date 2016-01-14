@@ -5,6 +5,7 @@
 
 #include "Block.h"
 #include "Action.h"
+#include "PriorityQueue.hpp"
 
 
 /*
@@ -46,6 +47,9 @@ private:
     Block blocks[size][size]; // Grid of blocks.
 
     vector<Action> actions; // List of all the actions an agent can take.
+
+    // Search related.
+    PriorityQueue<Block*, CompareBlocksAstar> astarQueue;
 };
 
 #endif // MAZE_H

@@ -24,7 +24,7 @@ Agent::Agent(Maze* _maze, ofPoint _mazePos, int _screenSize)
     halfBSize = blockSize*0.5;
     radius = blockSize*0.4;
 
-    speed = radius*10;
+    maxSpeed = radius*10;
 
     setMazePos(_mazePos);
 }
@@ -158,7 +158,7 @@ void Agent::update(double dt, float gravAngle) {
 
                     // Set the speed towards it.
                     vel = nextBlock->pos - mazePos;
-                    vel.scale(speed);
+                    vel.scale(maxSpeed);
                 }
             }
         }

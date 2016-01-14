@@ -21,6 +21,13 @@ Maze::Maze()
     do {
         target.set(int(ofRandom(0, size)), int(ofRandom(0, size)));
     } while (isSolid(target.x, target.y));
+
+    // Set all the blocks naive distance to the target.
+    for (int x = 0; x < size; x++) {
+        for (int y = 0; y < size; y++) {
+            blocks[x][y].distToTarget = ofVec2f(x, y).distance(target);
+        }
+    }
 }
 
 /*
@@ -141,6 +148,73 @@ Block* Maze::astarSearch(int x, int y) {
         }
     }
 
+    // Astar search.
+
+    // Reset all the visited, marked, parent and link values.
+    for (int x = 0; x < size; x++) {
+        for (int y = 0; y < size; y++) {
+            blocks[x][y].visited = false;
+            blocks[x][y].marked = false;
+            blocks[x][y].parent = nullptr;
+            blocks[x][y].links.clear();
+        }
+    }
+    // Empty the queue and add the starting block.
+    astarQueue.empty();
+    astarQueue.push(&blocks[x][y]);
+
+    bool done = false;
+
+    while (!done) {
+
+        // If queue is empty, end the search.
+        if (astarQueue.empty()) {
+            done = true;
+            break;
+        }
+
+        // Get the most promising block in the list.
+        Block* current = astarQueue.top();
+        astarQueue.pop();
+
+        // If the block is the target, end the search.
+        if (current->pos == target) {
+            done = true;
+            break;
+        }
+
+        // See where we can go from this block.
+        updatePaths(current->x, current->y);
+
+        // Loop over all the possible links.
+        for (BlockLink link : current->links) {
+            // Calculate this blocks distance from the origin.
+            float distFromOrigin = current->distFromOrigin + link.length;
+
+            // Check if the block has already been visited.
+            if (link.block->visited) {
+                if (link.block->distFromOrigin <= distFromOrigin) {
+                    // Nothing to do here: go to the next link.
+                    continue;
+                } else {
+                    // We are going to update this node with new values.
+                    // So we need to remove it from the queue first.
+                    astarQueue.erase(link.block);
+                }
+            }
+
+            // Set the blocks cost and the parent.
+            link.block->distFromOrigin = distFromOrigin;
+            link.block->parent = current;
+
+            link.block->visited = true;
+
+            // Add it to the queue.
+            astarQueue.push(link.block);
+        }
+
+    }
+
     return nextBlock;
 }
 
@@ -212,18 +286,6 @@ bool Maze::isStandable(int x, int y) {
 }
 
 /*
- * Initializes all possible actions.
- */
-void Maze::createActions() {
-    // 0T
-    // XX
-    Action act = Action(ofPoint(1, 0), vector<ActionReq>());
-    act.reqs.push_back(ActionReq{ofPoint(1, 1), true});
-    act.reqs.push_back(ActionReq{ofPoint(0, 1), true});
-    actions.push_back(act);
-}
-
-/*
  * Tests if an action is feasible.
  *
  * action: action to test.
@@ -259,7 +321,47 @@ bool Maze::isActionFeasible(Action action, ofPoint origin, float gravAngle, bool
             feasible = false;
             break;
         }
+
+        // If this location is the actions target, do an aditional check on whether we can actually stand there.
+        if (testPos == action.getAbsoluteTarget(origin, gravAngle, mirrored)) {
+            if (!isStandable(testPos.x, testPos.y)) {
+                feasible = false;
+                break;
+            }
+        }
     }
 
     return feasible;
+}
+
+/*
+ * Initializes all possible actions.
+ */
+void Maze::createActions() {
+    // 0T
+    // XX
+    Action act = Action(ofPoint(1, 0), vector<ActionReq>());
+    act.reqs.push_back(ActionReq{ofPoint(1, 1), true});
+    actions.push_back(act);
+
+    // _T
+    // 0X
+    // X
+
+    act = Action(ofPoint(1, -1), vector<ActionReq>());
+    act.reqs.push_back(ActionReq{ofPoint(0, -1), false});
+    act.reqs.push_back(ActionReq{ofPoint(1, 0), true});
+    actions.push_back(act);
+
+    // 0_
+    // XT
+    //  X
+
+    act = Action(ofPoint(1, 1), vector<ActionReq>());
+    act.reqs.push_back(ActionReq{ofPoint(1, 0), false});
+    act.reqs.push_back(ActionReq{ofPoint(1, 2), true});
+    actions.push_back(act);
+
+    // __T
+    // X_X
 }

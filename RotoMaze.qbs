@@ -27,6 +27,7 @@ Project{
             "src/ofApp.h",
             "src/Serial.cpp",
             "src/Serial.h",
+            "src/PriorityQueue.hpp",
         ]
 
         of.addons: [
