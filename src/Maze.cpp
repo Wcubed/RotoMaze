@@ -18,9 +18,11 @@ Maze::Maze()
     }
 
     // Randomly place the target on an empty spot.
-    do {
+    /*do {
         target.set(int(ofRandom(0, size)), int(ofRandom(0, size)));
-    } while (isSolid(target.x, target.y));
+    } while (isSolid(target.x, target.y));*/
+
+    target.set(0, 0);
 
     // Set all the blocks naive distance to the target.
     for (int x = 0; x < size; x++) {
@@ -134,23 +136,9 @@ void Maze::draw(int drawSize) {
  * Returns the velocity required for the next step.
  */
 ofVec2f Maze::astarSearch(int originX, int originY) {
-    /*updatePaths(originX, originY);
-
-    float shortestDist = ofVec2f(originX, originY).distance(target);
-    Block* nextBlock = &blocks[originX][originY];
-
-    for (BlockLink link : blocks[originX][originY].links) {
-        Block* block = link.block;
-
-        float targetDist = block->pos.distance(target);
-
-        if (targetDist < shortestDist || shortestDist < 0) {
-            shortestDist == targetDist;
-            nextBlock = block;
-        }
-    }*/
 
     // Astar search.
+    astarQueue = PriorityQueue<Block*, CompareBlocksAstar>();
 
     // Reset all the visited, marked, parent and link values.
     for (int x = 0; x < size; x++) {
@@ -158,13 +146,14 @@ ofVec2f Maze::astarSearch(int originX, int originY) {
             blocks[x][y].visited = false;
             blocks[x][y].marked = false;
             blocks[x][y].parent = nullptr;
+            blocks[x][y].distFromOrigin = 0;
             blocks[x][y].links.clear();
         }
     }
     // Empty the queue and add the starting block.
-    astarQueue.empty();
     astarQueue.push(&blocks[originX][originY]);
     blocks[originX][originY].visited = true;
+    blocks[originX][originY].marked = true;
 
     bool foundTarget = false;
 
@@ -180,6 +169,9 @@ ofVec2f Maze::astarSearch(int originX, int originY) {
         Block* current = astarQueue.top();
         astarQueue.pop();
 
+        current->marked = true;
+        current->visited = true;
+
         // If the block is the target, end the search.
         if (current->pos == target) {
             foundTarget = true;
@@ -194,26 +186,29 @@ ofVec2f Maze::astarSearch(int originX, int originY) {
             // Calculate this blocks distance from the origin.
             float distFromOrigin = current->distFromOrigin + link.length;
 
-            // Check if the block has already been visited.
-            if (link.block->visited) {
-                if (link.block->distFromOrigin <= distFromOrigin) {
-                    // Nothing to do here: go to the next link.
-                    continue;
-                } else {
-                    // We are going to update this node with new values.
-                    // So we need to remove it from the queue first.
-                    astarQueue.erase(link.block);
+            if (!link.block->marked) {
+
+                // Check if the block has already been visited but not marked.
+                if (link.block->visited) {
+                    if (link.block->distFromOrigin <= distFromOrigin) {
+                        // Nothing to do here: go to the next link.
+                        continue;
+                    } else {
+                        // We are going to update this node with new values.
+                        // So we need to remove it from the queue first.
+                        astarQueue.erase(link.block);
+                    }
                 }
+
+                // Set the blocks cost and the parent.
+                link.block->distFromOrigin = distFromOrigin;
+                link.block->parent = current;
+
+                link.block->visited = true;
+
+                // Add it to the queue.
+                astarQueue.push(link.block);
             }
-
-            // Set the blocks cost and the parent.
-            link.block->distFromOrigin = distFromOrigin;
-            link.block->parent = current;
-
-            link.block->visited = true;
-
-            // Add it to the queue.
-            astarQueue.push(link.block);
         }
     }
 
@@ -272,7 +267,7 @@ ofVec2f Maze::astarSearch(int originX, int originY) {
 }
 
 /*
- *
+ * Updates the block at the given position with all the possible paths to be taken from there.
  */
 void Maze::updatePaths(int x, int y) {
 
@@ -379,7 +374,7 @@ bool Maze::isActionFeasible(Action action, ofPoint origin, float gravAngle, bool
 
         // If this location is the actions target, do an aditional check on whether we can actually stand there.
         if (testPos == action.getAbsoluteTarget(origin, gravAngle, mirrored)) {
-            if (!isStandable(testPos.x, testPos.y)) {
+            if (!isStandable(testPos.x, testPos.y) && !(testPos.x == target.x && testPos.y == target.y)) {
                 feasible = false;
                 break;
             }
@@ -392,31 +387,83 @@ bool Maze::isActionFeasible(Action action, ofPoint origin, float gravAngle, bool
 /*
  * Initializes all possible actions.
  */
-void Maze::createActions() {
+void Maze::createActions() {    
+    // Legend:
+    // 0 - Origin
+    // T - Target
+    // _ - Must be empty
+    // X - Must be solid
+    //   - Doesn't matter
+
     // 0T
     // XX
     Action act = Action(ofPoint(1, 0), ofVec2f(4, 0), vector<ActionReq>());
+    act.reqs.push_back(ActionReq{ofPoint(0, 1), true});
     act.reqs.push_back(ActionReq{ofPoint(1, 1), true});
     actions.push_back(act);
 
     // _T
     // 0X
-    // X
-
-    act = Action(ofPoint(1, -1), ofVec2f(4, 0).rotate(-60), vector<ActionReq>());
+    // x
+    act = Action(ofPoint(1, -1), ofVec2f(4, 0).rotate(-70), vector<ActionReq>());
+    act.reqs.push_back(ActionReq{ofPoint(0, 1), true});
     act.reqs.push_back(ActionReq{ofPoint(0, -1), false});
     act.reqs.push_back(ActionReq{ofPoint(1, 0), true});
+    actions.push_back(act);
+
+    // __T
+    // __X
+    // 0_
+    // X
+    act = Action(ofPoint(2, -2), ofVec2f(6, 0).rotate(-80), vector<ActionReq>());
+    act.reqs.push_back(ActionReq{ofPoint(0, 1), true});
+    act.reqs.push_back(ActionReq{ofPoint(0, -1), false});
+    act.reqs.push_back(ActionReq{ofPoint(0, -2), false});
+    act.reqs.push_back(ActionReq{ofPoint(1, 0), false});
+    act.reqs.push_back(ActionReq{ofPoint(1, -1), false});
+    act.reqs.push_back(ActionReq{ofPoint(1, -2), false});
+    act.reqs.push_back(ActionReq{ofPoint(2, -1), true});
     actions.push_back(act);
 
     // 0_
     // XT
     //  X
-
-    act = Action(ofPoint(1, 1), ofVec2f(3, 0), vector<ActionReq>());
+    act = Action(ofPoint(1, 1), ofVec2f(2, 0), vector<ActionReq>());
+    act.reqs.push_back(ActionReq{ofPoint(0, 1), true});
     act.reqs.push_back(ActionReq{ofPoint(1, 0), false});
     act.reqs.push_back(ActionReq{ofPoint(1, 2), true});
     actions.push_back(act);
 
-    // __T
+    // 0_T
     // X_X
+    act = Action(ofPoint(2, 0), ofVec2f(3, 0).rotate(-45), vector<ActionReq>());
+    act.reqs.push_back(ActionReq{ofPoint(0, 1), true});
+    act.reqs.push_back(ActionReq{ofPoint(1, 0), false});
+    act.reqs.push_back(ActionReq{ofPoint(1, 1), false});
+    act.reqs.push_back(ActionReq{ofPoint(2, 1), true});
+    actions.push_back(act);
+
+    // 0__T
+    // X__X
+    act = Action(ofPoint(3, 0), ofVec2f(4, 0).rotate(-45), vector<ActionReq>());
+    act.reqs.push_back(ActionReq{ofPoint(0, 1), true});
+    act.reqs.push_back(ActionReq{ofPoint(1, 0), false});
+    act.reqs.push_back(ActionReq{ofPoint(1, 1), false});
+    act.reqs.push_back(ActionReq{ofPoint(2, 0), false});
+    act.reqs.push_back(ActionReq{ofPoint(2, 1), false});
+    act.reqs.push_back(ActionReq{ofPoint(3, 1), true});
+    actions.push_back(act);
+
+    // ___T
+    // 0__X
+    // X
+    act = Action(ofPoint(3, -1), ofVec2f(4, 0).rotate(-60), vector<ActionReq>());
+    act.reqs.push_back(ActionReq{ofPoint(0, 1), true});
+    act.reqs.push_back(ActionReq{ofPoint(1, 0), false});
+    act.reqs.push_back(ActionReq{ofPoint(2, 0), false});
+    act.reqs.push_back(ActionReq{ofPoint(3, 0), true});
+    act.reqs.push_back(ActionReq{ofPoint(0, -1), false});
+    act.reqs.push_back(ActionReq{ofPoint(1, -1), false});
+    act.reqs.push_back(ActionReq{ofPoint(2, -1), false});
+    actions.push_back(act);
 }

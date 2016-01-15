@@ -34,8 +34,6 @@ Agent::Agent(Maze* _maze, ofPoint _mazePos, int _screenSize)
  */
 void Agent::update(double dt, float gravAngle) {
 
-    bool collides = false;
-
     // Calculate the acceleration due to gravity.
     // A block is two meters high. On this scale falling looks good.
     ofVec2f acc = ofVec2f(0, 9.81 * halfBSize);
@@ -137,7 +135,7 @@ void Agent::update(double dt, float gravAngle) {
                 // Get the distance from the block center.
                 ofVec2f dist = newPos - blockPos;
 
-                // Take only the distance to the edge.
+                // Take only the distance perpendicular to the edge we are currently standing on.
                 if (dist.x * dist.x > dist.y * dist.y) {
                     dist.y = 0;
                 } else {
@@ -157,7 +155,7 @@ void Agent::update(double dt, float gravAngle) {
                     // Search for the next best block and get the required velocity.
                     ofVec2f neededVel = maze->astarSearch(mazePos.x, mazePos.y);
 
-                    // Scale the required velocity to match the block sizes.
+                    // Scale the velocity according to the block size.
                     vel = neededVel * blockSize;
                 }
             }
@@ -281,4 +279,11 @@ bool Agent::collidesWithBlock(ofPoint myScreenPos, ofPoint blockmazePos) {
  */
 ofPoint Agent::toScreenSpace(ofPoint pos) {
     return ofPoint(((pos.x + 0.5)/mazeSize) * screenSize, ((pos.y + 0.5)/mazeSize) * screenSize);
+}
+
+/*
+ * Converts screenspace coordinates to mazespace.
+ */
+ofPoint Agent::toMazeSpace(ofPoint pos) {
+    return ofPoint(int((pos.x / screenSize) * mazeSize), int((pos.y / screenSize) * mazeSize));
 }

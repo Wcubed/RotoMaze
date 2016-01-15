@@ -21,6 +21,7 @@ private:
     bool collidesWithBlock(ofPoint myScreenPos, ofPoint blockmazePos);
 
     ofPoint toScreenSpace(ofPoint pos);
+    ofPoint toMazeSpace(ofPoint pos);
 
 private:
     Maze* maze;
@@ -42,7 +43,7 @@ private:
     bool verCol;
     bool corCol;
 
-    static const bool debug = false;
+    static const bool debug = true;
 };
 
 #endif // AGENT_H
