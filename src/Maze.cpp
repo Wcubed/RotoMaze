@@ -114,8 +114,8 @@ void Maze::draw(int drawSize) {
     ofDrawLine(0, drawSize, drawSize, drawSize);
 
     // Draw reference point.
-    ofSetColor(0, 0, 255);
-    ofDrawCircle(-50, -50, 25);
+    //ofSetColor(0, 0, 255);
+    //ofDrawCircle(-50, -50, 25);
 
     // Draw the target.
     ofSetColor(0, 255, 255, 150);
