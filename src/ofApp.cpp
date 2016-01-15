@@ -30,7 +30,7 @@ void ofApp::reset() {
     // Generate a new maze.
     maze = Maze();
 
-    for (int i = 0; i < 1; i++) {
+    for (int i = 0; i < 2; i++) {
         int x, y;
         // Get a position that is not in a block.
         do {

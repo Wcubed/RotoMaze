@@ -132,9 +132,19 @@ void Agent::update(double dt, float gravAngle) {
                         }
 
                         // Mega hacky way to prevent the agents from getting stuck in a corner.
-                        if (newPos.x > blockPos.x && newPos.y > blockPos.y) {
-
-                        }
+                        /*if (newPos.x > blockPos.x && newPos.y > blockPos.y) {
+                            noCollPos.x = blockPos.x + (halfBSize + radius);
+                            noCollPos.y = blockPos.y + (halfBSize + radius);
+                        } else if (newPos.x > blockPos.x && newPos.y < blockPos.y) {
+                            noCollPos.x = blockPos.x + (halfBSize + radius);
+                            noCollPos.y = blockPos.y - (halfBSize + radius);
+                        } else if (newPos.x < blockPos.x && newPos.y > blockPos.y) {
+                            noCollPos.x = blockPos.x - (halfBSize + radius);
+                            noCollPos.y = blockPos.y + (halfBSize + radius);
+                        } else if (newPos.x < blockPos.x && newPos.y < blockPos.y) {
+                            noCollPos.x = blockPos.x - (halfBSize + radius);
+                            noCollPos.y = blockPos.y - (halfBSize + radius);
+                        }*/
                     }
                 }
 

@@ -92,7 +92,7 @@ void Maze::draw(int drawSize) {
             if (isSolid(x, y)) {
                 ofSetColor(255, 255, 255, 255);
                 ofDrawRectangle(blockSize * x, blockSize * y, blockSize, blockSize);
-            } else if (isStandable(x, y)) {
+            }/* else if (isStandable(x, y)) {
                 ofSetColor(0, 255, 0, 150);
                 ofDrawRectangle(blockSize * x, blockSize * y, blockSize, blockSize);
             }
@@ -100,7 +100,7 @@ void Maze::draw(int drawSize) {
             for (BlockLink link : blocks[x][y].links) {
                 ofSetColor(255, 255, 0);
                 ofDrawLine((x+0.5) * blockSize, (y+0.5) * blockSize, (link.block->x+0.5) * blockSize, (link.block->y+0.5) * blockSize);
-            }
+            }*/
         }
     }
 
@@ -401,16 +401,28 @@ void Maze::createActions() {
     actions.push_back(act);
 
     // _T
-    // 0X
+    // 0
     // x
     act = Action(ofPoint(1, -1), ofVec2f(4, 0).rotate(-70), vector<ActionReq>());
     act.reqs.push_back(ActionReq{ofPoint(0, 1), true});
     act.reqs.push_back(ActionReq{ofPoint(0, -1), false});
-    act.reqs.push_back(ActionReq{ofPoint(1, 0), true});
+    //act.reqs.push_back(ActionReq{ofPoint(1, 0), true});
     actions.push_back(act);
 
     // __T
-    // __X
+    // 0_
+    // x_
+    act = Action(ofPoint(2, -1), ofVec2f(4, 0).rotate(-70), vector<ActionReq>());
+    act.reqs.push_back(ActionReq{ofPoint(0, 1), true});
+    act.reqs.push_back(ActionReq{ofPoint(0, -1), false});
+    act.reqs.push_back(ActionReq{ofPoint(1, 0), false});
+    act.reqs.push_back(ActionReq{ofPoint(0, 1), false});
+    act.reqs.push_back(ActionReq{ofPoint(1, -1), false});
+    //act.reqs.push_back(ActionReq{ofPoint(2, 0), true});
+    actions.push_back(act);
+
+    // __T
+    // __
     // 0_
     // X
     act = Action(ofPoint(2, -2), ofVec2f(6, 0).rotate(-80), vector<ActionReq>());
@@ -420,51 +432,68 @@ void Maze::createActions() {
     act.reqs.push_back(ActionReq{ofPoint(1, 0), false});
     act.reqs.push_back(ActionReq{ofPoint(1, -1), false});
     act.reqs.push_back(ActionReq{ofPoint(1, -2), false});
-    act.reqs.push_back(ActionReq{ofPoint(2, -1), true});
+    //act.reqs.push_back(ActionReq{ofPoint(2, -1), true});
     actions.push_back(act);
 
     // 0_
     // XT
-    //  X
-    act = Action(ofPoint(1, 1), ofVec2f(2, 0), vector<ActionReq>());
+    act = Action(ofPoint(1, 1), ofVec2f(2, 0).rotate(-1), vector<ActionReq>());
     act.reqs.push_back(ActionReq{ofPoint(0, 1), true});
     act.reqs.push_back(ActionReq{ofPoint(1, 0), false});
-    act.reqs.push_back(ActionReq{ofPoint(1, 2), true});
+    //act.reqs.push_back(ActionReq{ofPoint(1, 2), true});
     actions.push_back(act);
 
     // 0_
     // X_
     //  T
-    //  X
-    act = Action(ofPoint(1, 2), ofVec2f(2, 0), vector<ActionReq>());
+    act = Action(ofPoint(1, 2), ofVec2f(2, 0).rotate(-1), vector<ActionReq>());
     act.reqs.push_back(ActionReq{ofPoint(0, 1), true});
     act.reqs.push_back(ActionReq{ofPoint(1, 0), false});
     act.reqs.push_back(ActionReq{ofPoint(1, 1), false});
-    act.reqs.push_back(ActionReq{ofPoint(1, 3), true});
+    //act.reqs.push_back(ActionReq{ofPoint(1, 3), true});
     actions.push_back(act);
 
+    // ___
     // 0_T
-    // X_X
+    // X_
     act = Action(ofPoint(2, 0), ofVec2f(3, 0).rotate(-45), vector<ActionReq>());
     act.reqs.push_back(ActionReq{ofPoint(0, 1), true});
+    act.reqs.push_back(ActionReq{ofPoint(0, -1), false});
+    act.reqs.push_back(ActionReq{ofPoint(1, -1), false});
+    act.reqs.push_back(ActionReq{ofPoint(2, -1), false});
     act.reqs.push_back(ActionReq{ofPoint(1, 0), false});
     act.reqs.push_back(ActionReq{ofPoint(1, 1), false});
-    act.reqs.push_back(ActionReq{ofPoint(2, 1), true});
+    //act.reqs.push_back(ActionReq{ofPoint(2, 1), true});
     actions.push_back(act);
 
-    // 0__T
-    // X__X
-    act = Action(ofPoint(3, 0), ofVec2f(4, 0).rotate(-45), vector<ActionReq>());
+    // 0__
+    // X_T
+    act = Action(ofPoint(2, 1), ofVec2f(3, 0).rotate(-30), vector<ActionReq>());
     act.reqs.push_back(ActionReq{ofPoint(0, 1), true});
     act.reqs.push_back(ActionReq{ofPoint(1, 0), false});
     act.reqs.push_back(ActionReq{ofPoint(1, 1), false});
     act.reqs.push_back(ActionReq{ofPoint(2, 0), false});
+    //act.reqs.push_back(ActionReq{ofPoint(2, 2), true});
+    actions.push_back(act);
+
+    // ____
+    // 0__T
+    // X__
+    act = Action(ofPoint(3, 0), ofVec2f(4, 0).rotate(-45), vector<ActionReq>());
+    act.reqs.push_back(ActionReq{ofPoint(0, 1), true});
+    act.reqs.push_back(ActionReq{ofPoint(0, -1), false});
+    act.reqs.push_back(ActionReq{ofPoint(1, -1), false});
+    act.reqs.push_back(ActionReq{ofPoint(2, -1), false});
+    act.reqs.push_back(ActionReq{ofPoint(3, -1), false});
+    act.reqs.push_back(ActionReq{ofPoint(1, 0), false});
+    act.reqs.push_back(ActionReq{ofPoint(1, 1), false});
+    act.reqs.push_back(ActionReq{ofPoint(2, 0), false});
     act.reqs.push_back(ActionReq{ofPoint(2, 1), false});
-    act.reqs.push_back(ActionReq{ofPoint(3, 1), true});
+    //act.reqs.push_back(ActionReq{ofPoint(3, 1), true});
     actions.push_back(act);
 
     // ___T
-    // 0__X
+    // 0__
     // X__
     act = Action(ofPoint(3, -1), ofVec2f(4, 0).rotate(-60), vector<ActionReq>());
     act.reqs.push_back(ActionReq{ofPoint(0, 1), true});
@@ -472,9 +501,21 @@ void Maze::createActions() {
     act.reqs.push_back(ActionReq{ofPoint(2, 1), false});
     act.reqs.push_back(ActionReq{ofPoint(1, 0), false});
     act.reqs.push_back(ActionReq{ofPoint(2, 0), false});
-    act.reqs.push_back(ActionReq{ofPoint(3, 0), true});
+    //act.reqs.push_back(ActionReq{ofPoint(3, 0), true});
     act.reqs.push_back(ActionReq{ofPoint(0, -1), false});
     act.reqs.push_back(ActionReq{ofPoint(1, -1), false});
     act.reqs.push_back(ActionReq{ofPoint(2, -1), false});
+    actions.push_back(act);
+
+    // T
+    // 0
+    act = Action(ofPoint(0, -1), ofVec2f(4, 0).rotate(-90), vector<ActionReq>());
+    actions.push_back(act);
+
+    // T
+    // _
+    // 0
+    act = Action(ofPoint(0, -1), ofVec2f(4, 0).rotate(-90), vector<ActionReq>());
+    act.reqs.push_back(ActionReq{ofPoint(0, -1), false});
     actions.push_back(act);
 }
