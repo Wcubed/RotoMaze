@@ -18,11 +18,9 @@ Maze::Maze()
     }
 
     // Randomly place the target on an empty spot.
-    /*do {
+    do {
         target.set(int(ofRandom(0, size)), int(ofRandom(0, size)));
-    } while (isSolid(target.x, target.y));*/
-
-    target.set(0, 0);
+    } while (isSolid(target.x, target.y));
 
     // Set all the blocks naive distance to the target.
     for (int x = 0; x < size; x++) {
@@ -434,6 +432,17 @@ void Maze::createActions() {
     act.reqs.push_back(ActionReq{ofPoint(1, 2), true});
     actions.push_back(act);
 
+    // 0_
+    // X_
+    //  T
+    //  X
+    act = Action(ofPoint(1, 2), ofVec2f(2, 0), vector<ActionReq>());
+    act.reqs.push_back(ActionReq{ofPoint(0, 1), true});
+    act.reqs.push_back(ActionReq{ofPoint(1, 0), false});
+    act.reqs.push_back(ActionReq{ofPoint(1, 1), false});
+    act.reqs.push_back(ActionReq{ofPoint(1, 3), true});
+    actions.push_back(act);
+
     // 0_T
     // X_X
     act = Action(ofPoint(2, 0), ofVec2f(3, 0).rotate(-45), vector<ActionReq>());
@@ -456,9 +465,11 @@ void Maze::createActions() {
 
     // ___T
     // 0__X
-    // X
+    // X__
     act = Action(ofPoint(3, -1), ofVec2f(4, 0).rotate(-60), vector<ActionReq>());
     act.reqs.push_back(ActionReq{ofPoint(0, 1), true});
+    act.reqs.push_back(ActionReq{ofPoint(1, 1), false});
+    act.reqs.push_back(ActionReq{ofPoint(2, 1), false});
     act.reqs.push_back(ActionReq{ofPoint(1, 0), false});
     act.reqs.push_back(ActionReq{ofPoint(2, 0), false});
     act.reqs.push_back(ActionReq{ofPoint(3, 0), true});

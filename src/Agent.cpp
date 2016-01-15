@@ -10,9 +10,11 @@ Agent::Agent() {
 /*
  * Constructor with position.
  */
-Agent::Agent(Maze* _maze, ofPoint _mazePos, int _screenSize)
+Agent::Agent(Maze* _maze, ofPoint _mazePos, int _screenSize, bool enemy)
 {
     maze = _maze;
+
+    isEnemy = enemy;
 
     mazePos = ofPoint(0, 0);
     screenPos = ofPoint(0, 0);
@@ -127,6 +129,10 @@ void Agent::update(double dt, float gravAngle) {
                             if (ofSign(blockPos.y - newPos.y) == ofSign(vel.y)) {
                                 vel.y = 0;
                             }
+                        }
+
+                        // Mega hacky way to prevent the agents from getting stuck in a corner.
+                        if (newPos.x > blockPos.x && newPos.y > blockPos.y) {
 
                         }
                     }
@@ -181,7 +187,11 @@ void Agent::draw() {
     ofFill();
 
     // Draw the body.
-    ofSetColor(200, 0, 0);
+    if (isEnemy) {
+        ofSetColor(200, 0, 0);
+    } else {
+        ofSetColor(0, 200, 0);
+    }
     ofDrawCircle(0, 0, radius);
 
     // Draw the eye.

@@ -38,11 +38,10 @@ private:
 
 public:
     static const int size = 20; // Size (in blocks) of the maze.
+    ofPoint target;
 
 private:
     float angle; // How much the maze is rotated. Most important for gravity.
-
-    ofPoint target;
 
     Block blocks[size][size]; // Grid of blocks.
 

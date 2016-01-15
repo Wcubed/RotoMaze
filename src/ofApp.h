@@ -14,6 +14,8 @@ public:
     void update();
     void draw();
 
+    void reset();
+
     void keyPressed(int key);
     void keyReleased(int key);
     void mouseMoved(int x, int y );
@@ -31,7 +33,12 @@ private:
     Maze maze;
     Serial serial;
 
+    Agent player;
     vector<Agent> agents;
+
+    bool running;
+    bool win = false;
+    bool lose = false;
 
     float angle; // Current angle of the input cube.
 

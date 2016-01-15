@@ -15,9 +15,40 @@ void ofApp::setup(){
 
     serial.setup();
 
-    agents.push_back(Agent(&maze, ofPoint(maze.size-1, 0), wireCube.getFboWidth()));
-    //agents.push_back(Agent(&maze, ofPoint(4, 3), wireCube.getFboWidth()));
-    //agents.push_back(Agent(&maze, ofPoint(7, 5), wireCube.getFboWidth()));
+    reset();
+
+    running = true;
+}
+
+/*
+ * Resets the game.
+ */
+void ofApp::reset() {
+    // Clear out the agents.
+    agents.clear();
+
+    // Generate a new maze.
+    maze = Maze();
+
+    for (int i = 0; i < 1; i++) {
+        int x, y;
+        // Get a position that is not in a block.
+        do {
+            x = ofRandom(0, maze.size);
+            y = ofRandom(0, maze.size);
+        } while (maze.isSolid(x, y));
+
+        // 1 player, the rest are enemies.
+        if (i == 0) {
+            player = Agent(&maze, ofPoint(maze.size-1, maze.size-1), wireCube.getFboWidth(), false);
+        } else {
+            agents.push_back(Agent(&maze, ofPoint(x, y), wireCube.getFboWidth(), true));
+        }
+    }
+
+    win = false;
+    lose = false;
+    running = true;
 }
 
 //--------------------------------------------------------------
@@ -46,14 +77,30 @@ void ofApp::update(){
     maze.setAngle(angle);
     wireCube.setZRot(angle);
 
-    // Update the agents.
-    for (int i = 0; i < agents.size(); i++) {
-        agents[i].update(dt, angle);
-    }
-
     // Update the cube and the maze.
     maze.update();
     wireCube.update(dt);
+
+    if (running) {
+        // Update the agents.
+        player.update(dt, angle);
+
+        // Check if the player won.
+        if (player.getMazePos() == maze.target) {
+            running = false;
+            win = true;
+        }
+
+        for (int i = 0; i < agents.size(); i++) {
+            agents[i].update(dt, angle);
+
+            // Check if the player lost.
+            if (agents[i].getMazePos() == maze.target) {
+                running = false;
+                lose = true;
+            }
+        }
+    }
 }
 
 //--------------------------------------------------------------
@@ -73,11 +120,19 @@ void ofApp::draw(){
     for (int i = 0; i < agents.size(); i++) {
         agents[i].draw();
     }
+    player.draw();
 
     wireCube.fboEnd();
 
     // ---------- Draw on actual window ----------
     ofBackground(0);
+
+    if (win) {
+        ofBackground(0, 100, 0);
+    }
+    if (lose) {
+        ofBackground(100, 0, 0);
+    }
 
     ofEnableSmoothing();
 
@@ -86,8 +141,6 @@ void ofApp::draw(){
 
     // The cube.
     wireCube.draw();
-
-
 
     ofPopMatrix();
 }
@@ -102,6 +155,11 @@ void ofApp::keyPressed(int key){
         if (key == 'd') {
             angle += 1;
         }
+    }
+
+    if (key == 'r') {
+        // r for reset.
+        reset();
     }
 }
 

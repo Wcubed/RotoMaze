@@ -9,13 +9,16 @@ class Agent
 {
 public:
     Agent();
-    Agent(Maze* _maze, ofPoint _mazePos, int _screenSize);
+    Agent(Maze* _maze, ofPoint _mazePos, int _screenSize, bool enemy);
 
     void update(double dt, float gravAngle);
     void draw();
 
     void setScreenPos(ofPoint newPos);
     void setMazePos(ofPoint newPos);
+
+    ofPoint getScreenPos() { return ofPoint(screenPos); }
+    ofPoint getMazePos() { return ofPoint(mazePos); }
 
 private:
     bool collidesWithBlock(ofPoint myScreenPos, ofPoint blockmazePos);
@@ -43,7 +46,9 @@ private:
     bool verCol;
     bool corCol;
 
-    static const bool debug = true;
+    bool isEnemy;
+
+    static const bool debug = false;
 };
 
 #endif // AGENT_H
