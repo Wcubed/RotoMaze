@@ -45,9 +45,9 @@ void Serial::updateSerial() {
 
                 int accelValueTemp = ofToInt(data); // Convert to int.
 
-                accelValue = accelValueTemp / 10;
+                accelValue = ((accelValueTemp - 180) * 1.5) - 20;
 
-                //printf("accelValue, %i", accelValue);
+                //std::cout << accelValue << std::endl;
 
                 // Reset buffer.
                 bufferPosition = 0;
@@ -66,9 +66,13 @@ void Serial::updateSerial() {
 
                 // Append the new byte to the buffer.
                 buffer[bufferPosition] = (char) message;
+
+                //std::cout << "b: " << buffer[bufferPosition] << std::endl;
+
                 bufferPosition++;
             }
             break;
         }
     }
+    mySerial.flush();
 }

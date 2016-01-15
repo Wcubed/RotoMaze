@@ -34,13 +34,13 @@ void ofApp::reset() {
         int x, y;
         // Get a position that is not in a block.
         do {
-            x = ofRandom(0, maze.size);
-            y = ofRandom(0, maze.size);
+            x = ofRandom(0, maze.size-1);
+            y = ofRandom(0, maze.size-1);
         } while (maze.isSolid(x, y));
 
         // 1 player, the rest are enemies.
         if (i == 0) {
-            player = Agent(&maze, ofPoint(maze.size-1, maze.size-1), wireCube.getFboWidth(), false);
+            player = Agent(&maze, ofPoint(x, x), wireCube.getFboWidth(), false);
         } else {
             agents.push_back(Agent(&maze, ofPoint(x, y), wireCube.getFboWidth(), true));
         }
@@ -64,7 +64,7 @@ void ofApp::update(){
     } else {
         // Use mouse position for angle.
         //angle = 90;
-        angle = ((float)mouseX / ofGetWidth() * 360) - 180;
+        angle = ((float)mouseX / ofGetWidth() * 540) - 270;
     }
 
     // printf("Accelerometer Angle %i /n", angle);

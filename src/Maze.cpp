@@ -401,7 +401,7 @@ void Maze::createActions() {
     actions.push_back(act);
 
     // _T
-    // 0
+    // 0X
     // x
     act = Action(ofPoint(1, -1), ofVec2f(4, 0).rotate(-70), vector<ActionReq>());
     act.reqs.push_back(ActionReq{ofPoint(0, 1), true});
@@ -410,7 +410,7 @@ void Maze::createActions() {
     actions.push_back(act);
 
     // __T
-    // 0_
+    // 0_X
     // x_
     act = Action(ofPoint(2, -1), ofVec2f(4, 0).rotate(-70), vector<ActionReq>());
     act.reqs.push_back(ActionReq{ofPoint(0, 1), true});
@@ -422,7 +422,7 @@ void Maze::createActions() {
     actions.push_back(act);
 
     // __T
-    // __
+    // __X
     // 0_
     // X
     act = Action(ofPoint(2, -2), ofVec2f(6, 0).rotate(-80), vector<ActionReq>());
